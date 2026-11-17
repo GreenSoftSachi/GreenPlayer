@@ -106,6 +106,6 @@
         app:itemIconTint="@color/selector_nav_tint"
         app:itemTextColor="@color/selector_nav_tint"
         app:labelVisibilityMode="labeled"
-        app:menu="@menu/menu_bottom_nav" />
+        app:menu="@menu/bottom_nav_menu" />
 
 </LinearLayout>
