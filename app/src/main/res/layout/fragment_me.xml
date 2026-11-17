@@ -1,0 +1,439 @@
+<?xml version=1.0 encoding=utf-8?>
+<ScrollView xmlns:android=http://schemas.android.com/apk/res/android
+    xmlns:app=http://schemas.android.com/apk/res-auto
+    android:layout_width=match_parent
+    android:layout_height=match_parent
+    android:background=@color/bg_dark>
+
+    <LinearLayout
+        android:layout_width=match_parent
+        android:layout_height=wrap_content
+        android:orientation=vertical
+        android:paddingBottom=80dp>
+
+        <!-- Top 8-Tool Grid Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width=match_parent
+            android:layout_height=wrap_content
+            android:layout_margin=16dp
+            app:cardBackgroundColor=@color/bg_surface
+            app:cardCornerRadius=14dp
+            app:cardElevation=2dp>
+
+            <GridLayout
+                android:layout_width=match_parent
+                android:layout_height=wrap_content
+                android:columnCount=4
+                android:rowCount=2
+                android:paddingVertical=12dp
+                android:paddingHorizontal=4dp>
+
+                <!-- 1. File Transfer -->
+                <LinearLayout
+                    android:id=@+id/meToolTransfer
+                    android:layout_width=0dp
+                    android:layout_height=wrap_content
+                    android:layout_columnWeight=1
+                    android:orientation=vertical
+                    android:gravity=center
+                    android:paddingVertical=8dp
+                    android:clickable=true
+                    android:focusable=true
+                    android:background=?attr/selectableItemBackgroundBorderless>
+
+                    <ImageView
+                        android:layout_width=28dp
+                        android:layout_height=28dp
+                        android:src=@drawable/ic_transfer
+                        android:tint=@color/icon_blue />
+
+                    <TextView
+                        android:layout_width=wrap_content
+                        android:layout_height=wrap_content
+                        android:layout_marginTop=6dp
+                        android:text=File Transfer
+                        android:textColor=@color/text_primary
+                        android:textSize=11sp
+                        android:maxLines=1 />
+                </LinearLayout>
+
+                <!-- 2. Private Folder -->
+                <LinearLayout
+                    android:id=@+id/meToolPrivateFolder
+                    android:layout_width=0dp
+                    android:layout_height=wrap_content
+                    android:layout_columnWeight=1
+                    android:orientation=vertical
+                    android:gravity=center
+                    android:paddingVertical=8dp
+                    android:clickable=true
+                    android:focusable=true
+                    android:background=?attr/selectableItemBackgroundBorderless>
+
+                    <ImageView
+                        android:layout_width=28dp
+                        android:layout_height=28dp
+                        android:src=@drawable/ic_private_folder
+                        android:tint=@color/icon_blue />
+
+                    <TextView
+                        android:layout_width=wrap_content
+                        android:layout_height=wrap_content
+                        android:layout_marginTop=6dp
+                        android:text=Private Folder
+                        android:textColor=@color/text_primary
+                        android:textSize=11sp
+                        android:maxLines=1 />
+                </LinearLayout>
+
+                <!-- 3. Video Playlists -->
+                <LinearLayout
+                    android:id=@+id/meToolPlaylists
+                    android:layout_width=0dp
+                    android:layout_height=wrap_content
+                    android:layout_columnWeight=1
+                    android:orientation=vertical
+                    android:gravity=center
+                    android:paddingVertical=8dp
+                    android:clickable=true
+                    android:focusable=true
+                    android:background=?attr/selectableItemBackgroundBorderless>
+
+                    <ImageView
+                        android:layout_width=28dp
+                        android:layout_height=28dp
+                        android:src=@drawable/ic_playlists
+                        android:tint=@color/icon_blue />
+
+                    <TextView
+                        android:layout_width=wrap_content
+                        android:layout_height=wrap_content
+                        android:layout_marginTop=6dp
+                        android:text=Video Playlists
+                        android:textColor=@color/text_primary
+                        android:textSize=11sp
+                        android:maxLines=1 />
+                </LinearLayout>
+
+                <!-- 4. Media Manager -->
+                <LinearLayout
+                    android:id=@+id/meToolMediaManager
+                    android:layout_width=0dp
+                    android:layout_height=wrap_content
+                    android:layout_columnWeight=1
+                    android:orientation=vertical
+                    android:gravity=center
+                    android:paddingVertical=8dp
+                    android:clickable=true
+                    android:focusable=true
+                    android:background=?attr/selectableItemBackgroundBorderless>
+
+                    <ImageView
+                        android:layout_width=28dp
+                        android:layout_height=28dp
+                        android:src=@drawable/ic_media_manager
+                        android:tint=@color/icon_blue />
+
+                    <TextView
+                        android:layout_width=wrap_content
+                        android:layout_height=wrap_content
+                        android:layout_marginTop=6dp
+                        android:text=Media Manager
+                        android:textColor=@color/text_primary
+                        android:textSize=11sp
+                        android:maxLines=1 />
+                </LinearLayout>
+
+                <!-- 5. Local Network -->
+                <FrameLayout
+                    android:id=@+id/meToolNetwork
+                    android:layout_width=0dp
+                    android:layout_height=wrap_content
+                    android:layout_columnWeight=1
+                    android:clickable=true
+                    android:focusable=true
+                    android:background=?attr/selectableItemBackgroundBorderless>
+
+                    <LinearLayout
+                        android:layout_width=match_parent
+                        android:layout_height=wrap_content
+                        android:orientation=vertical
+                        android:gravity=center
+                        android:paddingVertical=8dp>
+
+                        <ImageView
+                            android:layout_width=28dp
+                            android:layout_height=28dp
+                            android:src=@drawable/ic_network
+                            android:tint=@color/icon_blue />
+
+                        <TextView
+                            android:layout_width=wrap_content
+                            android:layout_height=wrap_content
+                            android:layout_marginTop=6dp
+                            android:text=Local Network
+                            android:textColor=@color/text_primary
+                            android:textSize=11sp
+                            android:maxLines=1 />
+                    </LinearLayout>
+
+                    <!-- NEW badge -->
+                    <TextView
+                        android:layout_width=wrap_content
+                        android:layout_height=wrap_content
+                        android:layout_gravity=top|end
+                        android:layout_marginEnd=6dp
+                        android:background=@drawable/bg_badge_red
+                        android:paddingHorizontal=4dp
+                        android:paddingVertical=1dp
+                        android:text=NEW
+                        android:textColor=#FFFFFF
+                        android:textSize=8sp
+                        android:textStyle=bold />
+                </FrameLayout>
+
+                <!-- 6. Music Player -->
+                <LinearLayout
+                    android:id=@+id/meToolMusicPlayer
+                    android:layout_width=0dp
+                    android:layout_height=wrap_content
+                    android:layout_columnWeight=1
+                    android:orientation=vertical
+                    android:gravity=center
+                    android:paddingVertical=8dp
+                    android:clickable=true
+                    android:focusable=true
+                    android:background=?attr/selectableItemBackgroundBorderless>
+
+                    <ImageView
+                        android:layout_width=28dp
+                        android:layout_height=28dp
+                        android:src=@drawable/ic_music
+                        android:tint=@color/icon_blue />
+
+                    <TextView
+                        android:layout_width=wrap_content
+                        android:layout_height=wrap_content
+                        android:layout_marginTop=6dp
+                        android:text=Music Player
+                        android:textColor=@color/text_primary
+                        android:textSize=11sp
+                        android:maxLines=1 />
+                </LinearLayout>
+
+                <!-- 7. Cloud Drive -->
+                <LinearLayout
+                    android:id=@+id/meToolCloudDrive
+                    android:layout_width=0dp
+                    android:layout_height=wrap_content
+                    android:layout_columnWeight=1
+                    android:orientation=vertical
+                    android:gravity=center
+                    android:paddingVertical=8dp
+                    android:clickable=true
+                    android:focusable=true
+                    android:background=?attr/selectableItemBackgroundBorderless>
+
+                    <ImageView
+                        android:layout_width=28dp
+                        android:layout_height=28dp
+                        android:src=@drawable/ic_cloud_drive
+                        android:tint=@color/icon_blue />
+
+                    <TextView
+                        android:layout_width=wrap_content
+                        android:layout_height=wrap_content
+                        android:layout_marginTop=6dp
+                        android:text=Cloud Drive
+                        android:textColor=@color/text_primary
+                        android:textSize=11sp
+                        android:maxLines=1 />
+                </LinearLayout>
+
+                <!-- 8. Recycle Bin -->
+                <LinearLayout
+                    android:id=@+id/meToolRecycleBin
+                    android:layout_width=0dp
+                    android:layout_height=wrap_content
+                    android:layout_columnWeight=1
+                    android:orientation=vertical
+                    android:gravity=center
+                    android:paddingVertical=8dp
+                    android:clickable=true
+                    android:focusable=true
+                    android:background=?attr/selectableItemBackgroundBorderless>
+
+                    <ImageView
+                        android:layout_width=28dp
+                        android:layout_height=28dp
+                        android:src=@drawable/ic_recycle_bin
+                        android:tint=@color/icon_blue />
+
+                    <TextView
+                        android:layout_width=wrap_content
+                        android:layout_height=wrap_content
+                        android:layout_marginTop=6dp
+                        android:text=Recycle Bin
+                        android:textColor=@color/text_primary
+                        android:textSize=11sp
+                        android:maxLines=1 />
+                </LinearLayout>
+
+            </GridLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Vertical Menu List -->
+        <LinearLayout
+            android:layout_width=match_parent
+            android:layout_height=wrap_content
+            android:orientation=vertical
+            android:background=@color/bg_surface
+            android:layout_marginHorizontal=16dp
+            android:layout_marginTop=4dp>
+
+            <!-- 1. Status Saver -->
+            <LinearLayout
+                android:id=@+id/rowStatusSaver
+                android:layout_width=match_parent
+                android:layout_height=52dp
+                android:orientation=horizontal
+                android:gravity=center_vertical
+                android:paddingHorizontal=16dp
+                android:background=?attr/selectableItemBackground
+                android:clickable=true
+                android:focusable=true>
+
+                <ImageView
+                    android:layout_width=24dp
+                    android:layout_height=24dp
+                    android:src=@drawable/ic_status_saver
+                    android:tint=@color/green_primary />
+
+                <TextView
+                    android:layout_width=0dp
+                    android:layout_height=wrap_content
+                    android:layout_weight=1
+                    android:layout_marginStart=16dp
+                    android:text=Status Saver
+                    android:textColor=@color/text_primary
+                    android:textSize=14sp />
+
+                <ImageView
+                    android:layout_width=18dp
+                    android:layout_height=18dp
+                    android:src=@drawable/ic_chevron_right
+                    android:tint=@color/text_hint />
+            </LinearLayout>
+
+            <View android:layout_width=match_parent android:layout_height=1dp android:background=@color/divider_color />
+
+            <!-- 2. App Theme -->
+            <LinearLayout
+                android:id=@+id/rowAppTheme
+                android:layout_width=match_parent
+                android:layout_height=52dp
+                android:orientation=horizontal
+                android:gravity=center_vertical
+                android:paddingHorizontal=16dp
+                android:background=?attr/selectableItemBackground
+                android:clickable=true
+                android:focusable=true>
+
+                <ImageView
+                    android:layout_width=24dp
+                    android:layout_height=24dp
+                    android:src=@drawable/ic_theme
+                    android:tint=@color/text_secondary />
+
+                <TextView
+                    android:layout_width=0dp
+                    android:layout_height=wrap_content
+                    android:layout_weight=1
+                    android:layout_marginStart=16dp
+                    android:text=App Theme
+                    android:textColor=@color/text_primary
+                    android:textSize=14sp />
+
+                <ImageView
+                    android:layout_width=18dp
+                    android:layout_height=18dp
+                    android:src=@drawable/ic_chevron_right
+                    android:tint=@color/text_hint />
+            </LinearLayout>
+
+            <View android:layout_width=match_parent android:layout_height=1dp android:background=@color/divider_color />
+
+            <!-- 3. Settings -->
+            <LinearLayout
+                android:id=@+id/rowSettings
+                android:layout_width=match_parent
+                android:layout_height=52dp
+                android:orientation=horizontal
+                android:gravity=center_vertical
+                android:paddingHorizontal=16dp
+                android:background=?attr/selectableItemBackground
+                android:clickable=true
+                android:focusable=true>
+
+                <ImageView
+                    android:layout_width=24dp
+                    android:layout_height=24dp
+                    android:src=@drawable/ic_settings
+                    android:tint=@color/text_secondary />
+
+                <TextView
+                    android:layout_width=0dp
+                    android:layout_height=wrap_content
+                    android:layout_weight=1
+                    android:layout_marginStart=16dp
+                    android:text=Settings
+                    android:textColor=@color/text_primary
+                    android:textSize=14sp />
+
+                <ImageView
+                    android:layout_width=18dp
+                    android:layout_height=18dp
+                    android:src=@drawable/ic_chevron_right
+                    android:tint=@color/text_hint />
+            </LinearLayout>
+
+            <View android:layout_width=match_parent android:layout_height=1dp android:background=@color/divider_color />
+
+            <!-- 4. Custom Pop-up Play -->
+            <LinearLayout
+                android:id=@+id/rowCustomPopup
+                android:layout_width=match_parent
+                android:layout_height=52dp
+                android:orientation=horizontal
+                android:gravity=center_vertical
+                android:paddingHorizontal=16dp
+                android:background=?attr/selectableItemBackground
+                android:clickable=true
+                android:focusable=true>
+
+                <ImageView
+                    android:layout_width=24dp
+                    android:layout_height=24dp
+                    android:src=@drawable/ic_popup_play
+                    android:tint=@color/text_secondary />
+
+                <TextView
+                    android:layout_width=0dp
+                    android:layout_height=wrap_content
+                    android:layout_weight=1
+                    android:layout_marginStart=16dp
+                    android:text=Custom Pop-up Play
+                    android:textColor=@color/text_primary
+                    android:textSize=14sp />
+
+                <ImageView
+                    android:layout_width=18dp
+                    android:layout_height=18dp
+                    android:src=@drawable/ic_chevron_right
+                    android:tint=@color/text_hint />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

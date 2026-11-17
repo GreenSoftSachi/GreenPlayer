@@ -32,28 +32,37 @@ jobs:
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: GreenPlayer-v1.0.0-APK
+        name: GreenPlayer-v1.1.0-APK
         path: app/build/outputs/apk/debug/app-debug.apk
         retention-days: 30
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v1.0.0
-        name: "Green Player v1.0.0 Release"
+        tag_name: v1.1.0
+        name: "Green Player v1.1.0 (Advanced Pro Release)"
         body: |
-          ## 🟢 Green Player v1.0.0 (Play Store Ready)
+          ## 🟢 Green Player v1.1.0 - Full MX Player Clone Suite
           
-          ### 📱 Features:
-          * 🖐️ MX-Style Gestures: Volume, Brightness, Scrubbing Seek HUDs
-          * ⏩ Double-Tap: -10s Rewind, +10s Forward, Play/Pause
-          * 📐 Aspect Ratio: Fit, Zoom/Crop, Stretch, 100% Original
-          * ⚡ Playback Speed: 0.25x – 4.0x
-          * 🎧 Multi-Audio & Subtitles (SRT, SSA, ASS, VTT)
-          * 🔒 Kids Lock & Picture-in-Picture (PiP)
-          * 🎬 Videos, Folders, and Music Scanner
+          ### 📱 New Features & Screens:
+          * 📁 **Folder Browser with Red Count Badges**: Shows video counts (1, 2, 5, 13, 99+) just like MX Player.
+          * ⚡ **6 Quick Tools Bar**: Music, File Transfer, Status Saver, My Playlists, Cleaner, Privacy.
+          * 🎛️ **View Mode & Sort Dialog**: All folders, Files, Folders / List, Grid / 10 sort criteria (Title, Date, Played time, Status, Length, Size, Resolution, Path, Frame rate, Type).
+          * 🧭 **4-Tab Navigation**: Local, Music, Transfer, Me.
+          * 🎵 **Music Player Suite**: Sub-tabs (Tracks, Playlists, Albums, Artists, Folders), Search Songs, Shuffle All.
+          * 📡 **Transfer Screen**: High-speed P2P send/receive + Web/PC browser download server.
+          * 👤 **Me Profile Hub**: 8-tool grid (File Transfer, Private Folder, Video Playlists, Media Manager, Local Network, Music Player, Cloud Drive, Recycle Bin).
+          * 🎨 **App Theme Chooser**: Adaptive, Light Theme, Dark Theme + 30-color classic theme palette + Zodiac themes.
+          * 🪟 **Custom Pop-up Play**: Previous/Next vs Fast Forward/Rewind toggle.
+          * ⚙️ **Comprehensive Settings Hierarchy**:
+            * **List**: Last media in folder, scroll to last played, thumbnail selection, floating button, "NEW" badge periods.
+            * **Player**: Resume prompt behavior, remember selections, fast seeking, preview while seeking.
+            * **Decoder**: HW+ video/audio decoders, SW audio, Custom Codec browser.
+            * **Audio**: Audio player background mode, 200% volume boost, audio delay sync, equalizer.
+            * **Subtitle**: Global character encoding selector (UTF-8, UTF-16, Cyrillic, Greek, Hebrew, Windows-1252, Shift_JIS, etc.), text sizing, colors.
+            * **General**: Localization (English, Sinhala, Spanish, etc.), cache cleaner, history reset.
           
-          Download the **app-debug.apk** below to install on your phone!
+          Download **app-debug.apk** below to install!
         files: app/build/outputs/apk/debug/app-debug.apk
         fail_on_unmatched_files: false
       env:

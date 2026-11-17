@@ -1,0 +1,175 @@
+<?xml version=1.0 encoding=utf-8?>
+<LinearLayout xmlns:android=http://schemas.android.com/apk/res/android
+    android:layout_width=match_parent
+    android:layout_height=match_parent
+    android:orientation=vertical
+    android:background=@color/bg_dark>
+
+    <LinearLayout
+        android:layout_width=match_parent
+        android:layout_height=56dp
+        android:orientation=horizontal
+        android:gravity=center_vertical
+        android:paddingHorizontal=12dp
+        android:background=@color/bg_surface>
+
+        <ImageView
+            android:id=@+id/btnBackGeneral
+            android:layout_width=40dp
+            android:layout_height=40dp
+            android:padding=8dp
+            android:src=@drawable/ic_arrow_back
+            android:background=?attr/selectableItemBackgroundBorderless />
+
+        <TextView
+            android:layout_width=wrap_content
+            android:layout_height=wrap_content
+            android:layout_marginStart=12dp
+            android:text=General
+            android:textColor=@color/text_primary
+            android:textSize=18sp
+            android:textStyle=bold />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width=match_parent
+        android:layout_height=match_parent>
+
+        <LinearLayout
+            android:layout_width=match_parent
+            android:layout_height=wrap_content
+            android:orientation=vertical
+            android:padding=16dp>
+
+            <TextView
+                android:layout_width=wrap_content
+                android:layout_height=wrap_content
+                android:text=Localization
+                android:textColor=@color/icon_blue
+                android:textSize=13sp
+                android:textStyle=bold
+                android:layout_marginBottom=16dp />
+
+            <LinearLayout
+                android:id=@+id/layoutAppLanguage
+                android:layout_width=match_parent
+                android:layout_height=wrap_content
+                android:orientation=vertical
+                android:clickable=true
+                android:focusable=true
+                android:paddingVertical=8dp
+                android:layout_marginBottom=16dp>
+
+                <TextView
+                    android:layout_width=wrap_content
+                    android:layout_height=wrap_content
+                    android:text=App language
+                    android:textColor=@color/text_primary
+                    android:textSize=14sp />
+
+                <TextView
+                    android:id=@+id/tvAppLanguageVal
+                    android:layout_width=wrap_content
+                    android:layout_height=wrap_content
+                    android:layout_marginTop=2dp
+                    android:text=System Default (English)
+                    android:textColor=@color/text_secondary
+                    android:textSize=12sp />
+            </LinearLayout>
+
+            <View
+                android:layout_width=match_parent
+                android:layout_height=1dp
+                android:background=@color/divider_color
+                android:layout_marginBottom=16dp />
+
+            <TextView
+                android:layout_width=wrap_content
+                android:layout_height=wrap_content
+                android:text=Storage &amp; History
+                android:textColor=@color/icon_blue
+                android:textSize=13sp
+                android:textStyle=bold
+                android:layout_marginBottom=16dp />
+
+            <LinearLayout
+                android:id=@+id/layoutClearHistory
+                android:layout_width=match_parent
+                android:layout_height=wrap_content
+                android:orientation=vertical
+                android:clickable=true
+                android:focusable=true
+                android:paddingVertical=8dp
+                android:layout_marginBottom=16dp>
+
+                <TextView
+                    android:layout_width=wrap_content
+                    android:layout_height=wrap_content
+                    android:text=Clear playback history
+                    android:textColor=@color/text_primary
+                    android:textSize=14sp />
+
+                <TextView
+                    android:layout_width=wrap_content
+                    android:layout_height=wrap_content
+                    android:layout_marginTop=2dp
+                    android:text=Erase all last played positions and history records.
+                    android:textColor=@color/text_secondary
+                    android:textSize=12sp />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id=@+id/layoutClearCache
+                android:layout_width=match_parent
+                android:layout_height=wrap_content
+                android:orientation=vertical
+                android:clickable=true
+                android:focusable=true
+                android:paddingVertical=8dp
+                android:layout_marginBottom=16dp>
+
+                <TextView
+                    android:layout_width=wrap_content
+                    android:layout_height=wrap_content
+                    android:text=Clear thumbnail cache
+                    android:textColor=@color/text_primary
+                    android:textSize=14sp />
+
+                <TextView
+                    android:layout_width=wrap_content
+                    android:layout_height=wrap_content
+                    android:layout_marginTop=2dp
+                    android:text=Free up device storage by clearing video thumbnail cache.
+                    android:textColor=@color/text_secondary
+                    android:textSize=12sp />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id=@+id/layoutResetSettings
+                android:layout_width=match_parent
+                android:layout_height=wrap_content
+                android:orientation=vertical
+                android:clickable=true
+                android:focusable=true
+                android:paddingVertical=8dp>
+
+                <TextView
+                    android:layout_width=wrap_content
+                    android:layout_height=wrap_content
+                    android:text=Reset settings
+                    android:textColor=@color/badge_red
+                    android:textSize=14sp
+                    android:textStyle=bold />
+
+                <TextView
+                    android:layout_width=wrap_content
+                    android:layout_height=wrap_content
+                    android:layout_marginTop=2dp
+                    android:text=Restore all player and list preferences to factory defaults.
+                    android:textColor=@color/text_secondary
+                    android:textSize=12sp />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

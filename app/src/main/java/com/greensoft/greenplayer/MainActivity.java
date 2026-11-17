@@ -7,9 +7,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -19,8 +21,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,12 +30,17 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQ_CODE = 1001;
 
     private ViewPager2 mainViewPager;
-    private TabLayout mainTabLayout;
+    private BottomNavigationView mainBottomNav;
+    private TextView tvMainTitle;
     private EditText etSearch;
-    private ImageButton btnSearch, btnSort, btnSettings;
+    private ImageButton btnToggleViewMode, btnSearch, btnViewSortDialog;
 
-    private final List<MediaFragment> fragments = new ArrayList<>();
-    private final String[] tabTitles = new String[]{"🎬 Videos", "📁 Folders", "🎵 Audio"};
+    private LocalFragment localFragment;
+    private MusicFragment musicFragment;
+    private TransferFragment transferFragment;
+    private MeFragment meFragment;
+
+    private final String[] tabTitles = new String[]{"Folders", "Music", "Transfer", "Me"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,27 +48,34 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initViews();
-        setupTabs();
-        setupSearch();
-        setupButtons();
+        setupViewPager();
+        setupBottomNav();
+        setupToolbarActions();
 
         checkAndRequestPermissions();
     }
 
     private void initViews() {
         mainViewPager = findViewById(R.id.mainViewPager);
-        mainTabLayout = findViewById(R.id.mainTabLayout);
+        mainBottomNav = findViewById(R.id.mainBottomNav);
+        tvMainTitle = findViewById(R.id.tvMainTitle);
         etSearch = findViewById(R.id.etSearch);
+        btnToggleViewMode = findViewById(R.id.btnToggleViewMode);
         btnSearch = findViewById(R.id.btnSearch);
-        btnSort = findViewById(R.id.btnSort);
-        btnSettings = findViewById(R.id.btnSettings);
+        btnViewSortDialog = findViewById(R.id.btnViewSortDialog);
     }
 
-    private void setupTabs() {
-        fragments.clear();
-        fragments.add(MediaFragment.newInstance(MediaFragment.TYPE_VIDEOS));
-        fragments.add(MediaFragment.newInstance(MediaFragment.TYPE_FOLDERS));
-        fragments.add(MediaFragment.newInstance(MediaFragment.TYPE_MUSIC));
+    private void setupViewPager() {
+        localFragment = LocalFragment.newInstance();
+        musicFragment = MusicFragment.newInstance();
+        transferFragment = TransferFragment.newInstance();
+        meFragment = MeFragment.newInstance();
+
+        List<Fragment> fragments = new ArrayList<>();
+        fragments.add(localFragment);
+        fragments.add(musicFragment);
+        fragments.add(transferFragment);
+        fragments.add(meFragment);
 
         mainViewPager.setAdapter(new FragmentStateAdapter(this) {
             @NonNull
@@ -77,12 +90,54 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        new TabLayoutMediator(mainTabLayout, mainViewPager, (tab, position) -> {
-            tab.setText(tabTitles[position]);
-        }).attach();
+        mainViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                tvMainTitle.setText(tabTitles[position]);
+                int menuId = R.id.nav_local;
+                if (position == 1) menuId = R.id.nav_music;
+                else if (position == 2) menuId = R.id.nav_transfer;
+                else if (position == 3) menuId = R.id.nav_me;
+
+                mainBottomNav.setSelectedItemId(menuId);
+
+                // Show top toolbar controls only on Local/Videos and Music tabs
+                boolean showTools = (position == 0 || position == 1);
+                btnToggleViewMode.setVisibility(position == 0 ? View.VISIBLE : View.GONE);
+                btnViewSortDialog.setVisibility(position == 0 ? View.VISIBLE : View.GONE);
+                btnSearch.setVisibility(showTools ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
-    private void setupSearch() {
+    private void setupBottomNav() {
+        mainBottomNav.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.nav_local) {
+                mainViewPager.setCurrentItem(0, true);
+                return true;
+            } else if (itemId == R.id.nav_music) {
+                mainViewPager.setCurrentItem(1, true);
+                return true;
+            } else if (itemId == R.id.nav_transfer) {
+                mainViewPager.setCurrentItem(2, true);
+                return true;
+            } else if (itemId == R.id.nav_me) {
+                mainViewPager.setCurrentItem(3, true);
+                return true;
+            }
+            return false;
+        });
+    }
+
+    public void selectTab(int position) {
+        if (mainViewPager != null) {
+            mainViewPager.setCurrentItem(position, true);
+        }
+    }
+
+    private void setupToolbarActions() {
         btnSearch.setOnClickListener(v -> {
             if (etSearch.getVisibility() == View.VISIBLE) {
                 etSearch.setVisibility(View.GONE);
@@ -96,42 +151,92 @@ public class MainActivity extends AppCompatActivity {
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                int currentTab = mainViewPager.getCurrentItem();
-                if (currentTab >= 0 && currentTab < fragments.size()) {
-                    fragments.get(currentTab).filter(s.toString());
+                if (mainViewPager.getCurrentItem() == 0 && localFragment != null) {
+                    localFragment.filter(s.toString());
                 }
             }
             @Override public void afterTextChanged(Editable s) {}
         });
+
+        btnToggleViewMode.setOnClickListener(v -> {
+            if (localFragment != null) {
+                // Cycle Folders -> Files
+                if (tvMainTitle.getText().toString().equals("Folders")) {
+                    tvMainTitle.setText("Videos");
+                    localFragment.setViewMode(LocalFragment.VIEW_FILES);
+                } else {
+                    tvMainTitle.setText("Folders");
+                    localFragment.setViewMode(LocalFragment.VIEW_FOLDERS);
+                }
+            }
+        });
+
+        btnViewSortDialog.setOnClickListener(v -> showViewSortDialog());
     }
 
-    private void setupButtons() {
-        btnSort.setOnClickListener(v -> showSortDialog());
-        btnSettings.setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
-    }
+    private void showViewSortDialog() {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_view_sort, null);
 
-    private void showSortDialog() {
-        String[] sortOptions = new String[]{
-                getString(R.string.sort_date),
-                getString(R.string.sort_name),
-                getString(R.string.sort_size),
-                getString(R.string.sort_duration)
-        };
+        TextView btnViewAll = dialogView.findViewById(R.id.btnViewAllFolders);
+        TextView btnViewFiles = dialogView.findViewById(R.id.btnViewFiles);
+        TextView btnViewFolders = dialogView.findViewById(R.id.btnViewFolders);
 
-        new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.sort_by))
-                .setItems(sortOptions, (dialog, which) -> {
-                    int currentTab = mainViewPager.getCurrentItem();
-                    if (currentTab >= 0 && currentTab < fragments.size()) {
-                        fragments.get(currentTab).applySort(which);
-                    }
-                })
-                .show();
+        TextView btnList = dialogView.findViewById(R.id.btnLayoutList);
+        TextView btnGrid = dialogView.findViewById(R.id.btnLayoutGrid);
+
+        TextView sortTitle = dialogView.findViewById(R.id.sortTitle);
+        TextView sortDate = dialogView.findViewById(R.id.sortDate);
+        TextView sortPlayedTime = dialogView.findViewById(R.id.sortPlayedTime);
+        TextView sortStatus = dialogView.findViewById(R.id.sortStatus);
+        TextView sortLength = dialogView.findViewById(R.id.sortLength);
+        TextView sortSize = dialogView.findViewById(R.id.sortSize);
+        TextView sortResolution = dialogView.findViewById(R.id.sortResolution);
+        TextView sortPath = dialogView.findViewById(R.id.sortPath);
+        TextView sortFrameRate = dialogView.findViewById(R.id.sortFrameRate);
+        TextView sortType = dialogView.findViewById(R.id.sortType);
+
+        final int[] chosenView = new int[]{LocalFragment.VIEW_FOLDERS};
+        final int[] chosenLayout = new int[]{LocalFragment.LAYOUT_LIST};
+        final int[] chosenSort = new int[]{0};
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create();
+
+        btnViewAll.setOnClickListener(v -> chosenView[0] = LocalFragment.VIEW_ALL_FOLDERS);
+        btnViewFiles.setOnClickListener(v -> chosenView[0] = LocalFragment.VIEW_FILES);
+        btnViewFolders.setOnClickListener(v -> chosenView[0] = LocalFragment.VIEW_FOLDERS);
+
+        btnList.setOnClickListener(v -> chosenLayout[0] = LocalFragment.LAYOUT_LIST);
+        btnGrid.setOnClickListener(v -> chosenLayout[0] = LocalFragment.LAYOUT_GRID);
+
+        sortTitle.setOnClickListener(v -> chosenSort[0] = 0);
+        sortDate.setOnClickListener(v -> chosenSort[0] = 1);
+        sortSize.setOnClickListener(v -> chosenSort[0] = 2);
+        sortLength.setOnClickListener(v -> chosenSort[0] = 3);
+        sortPlayedTime.setOnClickListener(v -> chosenSort[0] = 1);
+        sortStatus.setOnClickListener(v -> chosenSort[0] = 1);
+        sortResolution.setOnClickListener(v -> chosenSort[0] = 2);
+        sortPath.setOnClickListener(v -> chosenSort[0] = 0);
+        sortFrameRate.setOnClickListener(v -> chosenSort[0] = 1);
+        sortType.setOnClickListener(v -> chosenSort[0] = 0);
+
+        dialogView.findViewById(R.id.btnCancelViewSort).setOnClickListener(v -> dialog.dismiss());
+        dialogView.findViewById(R.id.btnDoneViewSort).setOnClickListener(v -> {
+            if (localFragment != null) {
+                localFragment.setViewMode(chosenView[0]);
+                localFragment.setLayoutMode(chosenLayout[0]);
+                localFragment.setSortCriteria(chosenSort[0]);
+                tvMainTitle.setText(chosenView[0] == LocalFragment.VIEW_FOLDERS ? "Folders" : "Videos");
+            }
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 
     private void checkAndRequestPermissions() {
         List<String> neededPermissions = new ArrayList<>();
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
                 neededPermissions.add(Manifest.permission.READ_MEDIA_VIDEO);
@@ -147,16 +252,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (!neededPermissions.isEmpty()) {
             ActivityCompat.requestPermissions(this, neededPermissions.toArray(new String[0]), PERMISSION_REQ_CODE);
-        } else {
-            refreshAllFragments();
-        }
-    }
-
-    private void refreshAllFragments() {
-        for (MediaFragment f : fragments) {
-            if (f != null && f.isAdded()) {
-                f.loadMediaFiles();
-            }
         }
     }
 
@@ -165,16 +260,17 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQ_CODE) {
             boolean allGranted = true;
-            for (int res : grantResults) {
-                if (res != PackageManager.PERMISSION_GRANTED) {
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
                     allGranted = false;
                     break;
                 }
             }
             if (allGranted) {
-                refreshAllFragments();
+                if (localFragment != null) localFragment.loadVideos();
+                if (musicFragment != null) musicFragment.loadAudioFiles();
             } else {
-                Toast.makeText(this, getString(R.string.permission_required), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Storage permission is required to list media files", Toast.LENGTH_LONG).show();
             }
         }
     }
