@@ -39,10 +39,10 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderView
         holder.tvFolderName.setText(folder.getName());
 
         int count = folder.getCount();
-        String badgeText = count > 99 ? 99+ : String.valueOf(count);
+        String badgeText = count > 99 ? "99+" : String.valueOf(count);
         holder.tvFolderBadge.setText(badgeText);
 
-        String countSubtext = count == 1 ? 1 video : count +  videos;
+        String countSubtext = count == 1 ? "1 video" : count + " videos";
         holder.tvFolderVideoCount.setText(countSubtext);
 
         holder.itemView.setOnClickListener(v -> {

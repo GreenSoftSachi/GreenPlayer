@@ -11,7 +11,7 @@ public class FolderItem {
 
     public FolderItem(String path) {
         this.path = path;
-        this.name = (path != null) ? new File(path).getName() : Unknown;
+        this.name = (path != null) ? new File(path).getName() : "Unknown";
     }
 
     public String getPath() { return path; }
