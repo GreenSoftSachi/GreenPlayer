@@ -60,8 +60,8 @@ public class MusicFragment extends Fragment {
         rvMusic.setLayoutManager(new LinearLayoutManager(requireContext()));
         adapter = new MediaAdapter(requireContext(), displayedTracks, (item, position) -> {
             Intent intent = new Intent(requireContext(), PlayerActivity.class);
-            intent.putExtra(path, item.getPath());
-            intent.putExtra(title, item.getTitle());
+            intent.putExtra("path", item.getPath());
+            intent.putExtra("title", item.getTitle());
             startActivity(intent);
         });
         rvMusic.setAdapter(adapter);
@@ -82,17 +82,16 @@ public class MusicFragment extends Fragment {
     }
 
     private void setupSubTabs() {
-        tabLayoutMusic.addTab(tabLayoutMusic.newTab().setText(Tracks));
-        tabLayoutMusic.addTab(tabLayoutMusic.newTab().setText(Playlists));
-        tabLayoutMusic.addTab(tabLayoutMusic.newTab().setText(Albums));
-        tabLayoutMusic.addTab(tabLayoutMusic.newTab().setText(Artists));
-        tabLayoutMusic.addTab(tabLayoutMusic.newTab().setText(Folders));
+        tabLayoutMusic.addTab(tabLayoutMusic.newTab().setText("Tracks"));
+        tabLayoutMusic.addTab(tabLayoutMusic.newTab().setText("Playlists"));
+        tabLayoutMusic.addTab(tabLayoutMusic.newTab().setText("Albums"));
+        tabLayoutMusic.addTab(tabLayoutMusic.newTab().setText("Artists"));
+        tabLayoutMusic.addTab(tabLayoutMusic.newTab().setText("Folders"));
 
         tabLayoutMusic.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                // Filter by category
-                Toast.makeText(requireContext(), tab.getText() +  view, Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), tab.getText() + " view", Toast.LENGTH_SHORT).show();
             }
             @Override public void onTabUnselected(TabLayout.Tab tab) {}
             @Override public void onTabReselected(TabLayout.Tab tab) {}
@@ -118,10 +117,10 @@ public class MusicFragment extends Fragment {
                 MediaStore.Audio.Media.MIME_TYPE
         };
 
-        String selection = MediaStore.Audio.Media.IS_MUSIC +  != 0;
+        String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
 
         try (Cursor cursor = requireContext().getContentResolver().query(
-                collection, projection, selection, null, MediaStore.Audio.Media.TITLE +  ASC)) {
+                collection, projection, selection, null, MediaStore.Audio.Media.TITLE + " ASC")) {
 
             if (cursor != null) {
                 int idCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID);
@@ -150,21 +149,21 @@ public class MusicFragment extends Fragment {
         }
 
         displayedTracks.addAll(allTracks);
-        tvSongCount.setText(Shuffle All ( + displayedTracks.size() +  songs));
+        tvSongCount.setText("Shuffle All (" + displayedTracks.size() + " songs)");
         adapter.notifyDataSetChanged();
     }
 
     private void shuffleAllSongs() {
         if (displayedTracks.isEmpty()) {
-            Toast.makeText(requireContext(), No audio songs found, Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "No audio songs found", Toast.LENGTH_SHORT).show();
             return;
         }
         List<MediaItem> shuffled = new ArrayList<>(displayedTracks);
         Collections.shuffle(shuffled);
         MediaItem first = shuffled.get(0);
         Intent intent = new Intent(requireContext(), PlayerActivity.class);
-        intent.putExtra(path, first.getPath());
-        intent.putExtra(title, first.getTitle());
+        intent.putExtra("path", first.getPath());
+        intent.putExtra("title", first.getTitle());
         startActivity(intent);
     }
 
@@ -180,7 +179,7 @@ public class MusicFragment extends Fragment {
                 }
             }
         }
-        tvSongCount.setText(Shuffle All ( + displayedTracks.size() +  songs));
+        tvSongCount.setText("Shuffle All (" + displayedTracks.size() + " songs)");
         adapter.notifyDataSetChanged();
     }
 }

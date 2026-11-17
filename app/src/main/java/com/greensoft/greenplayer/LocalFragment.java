@@ -1,6 +1,5 @@
 package com.greensoft.greenplayer;
 
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -42,7 +41,7 @@ public class LocalFragment extends Fragment {
 
     private int currentViewMode = VIEW_FOLDERS;
     private int currentLayoutMode = LAYOUT_LIST;
-    private int currentSortCriteria = 0; // 0=Title, 1=Date, 2=Size, 3=Length, etc.
+    private int currentSortCriteria = 0;
 
     private SwipeRefreshLayout swipeRefresh;
     private RecyclerView rvMedia;
@@ -75,7 +74,7 @@ public class LocalFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        prefs = requireContext().getSharedPreferences(green_player_settings, Context.MODE_PRIVATE);
+        prefs = requireContext().getSharedPreferences("green_player_settings", Context.MODE_PRIVATE);
 
         swipeRefresh = view.findViewById(R.id.swipeRefreshLocal);
         rvMedia = view.findViewById(R.id.rvLocalMedia);
@@ -89,7 +88,6 @@ public class LocalFragment extends Fragment {
         setupRecyclerView();
 
         btnBackToFolders.setOnClickListener(v -> exitFolderView());
-
         fabPlayLast.setOnClickListener(v -> playLastPlayedVideo());
 
         swipeRefresh.setColorSchemeResources(R.color.green_primary, R.color.green_accent);
@@ -121,16 +119,16 @@ public class LocalFragment extends Fragment {
             });
         }
         if (toolStatus != null) {
-            toolStatus.setOnClickListener(v -> Toast.makeText(requireContext(), Status Saver: Scanning WhatsApp / Telegram statuses, Toast.LENGTH_SHORT).show());
+            toolStatus.setOnClickListener(v -> Toast.makeText(requireContext(), "Status Saver: Scanning WhatsApp / Telegram statuses", Toast.LENGTH_SHORT).show());
         }
         if (toolPlaylists != null) {
-            toolPlaylists.setOnClickListener(v -> Toast.makeText(requireContext(), My Playlists: 0 custom playlists, Toast.LENGTH_SHORT).show());
+            toolPlaylists.setOnClickListener(v -> Toast.makeText(requireContext(), "My Playlists: 0 custom playlists", Toast.LENGTH_SHORT).show());
         }
         if (toolCleaner != null) {
-            toolCleaner.setOnClickListener(v -> Toast.makeText(requireContext(), Cleaner: Scanning cache and temp video files, Toast.LENGTH_SHORT).show());
+            toolCleaner.setOnClickListener(v -> Toast.makeText(requireContext(), "Cleaner: Scanning cache and temp video files", Toast.LENGTH_SHORT).show());
         }
         if (toolPrivacy != null) {
-            toolPrivacy.setOnClickListener(v -> Toast.makeText(requireContext(), Privacy: Enter PIN to access Private Folder, Toast.LENGTH_SHORT).show());
+            toolPrivacy.setOnClickListener(v -> Toast.makeText(requireContext(), "Privacy: Enter PIN to access Private Folder", Toast.LENGTH_SHORT).show());
         }
     }
 
@@ -143,14 +141,12 @@ public class LocalFragment extends Fragment {
 
         mediaAdapter = new MediaAdapter(requireContext(), (activeFolder != null) ? currentFolderVideos : allVideos, (item, position) -> {
             Intent intent = new Intent(requireContext(), PlayerActivity.class);
-            intent.putExtra(path, item.getPath());
-            intent.putExtra(title, item.getTitle());
+            intent.putExtra("path", item.getPath());
+            intent.putExtra("title", item.getTitle());
             startActivity(intent);
         });
 
-        folderAdapter = new FolderAdapter(requireContext(), folderList, folder -> {
-            enterFolder(folder);
-        });
+        folderAdapter = new FolderAdapter(requireContext(), folderList, folder -> enterFolder(folder));
     }
 
     public void setViewMode(int mode) {
@@ -177,7 +173,7 @@ public class LocalFragment extends Fragment {
         currentFolderVideos.clear();
         currentFolderVideos.addAll(folder.getItems());
         layoutFolderBreadcrumb.setVisibility(View.VISIBLE);
-        tvCurrentFolderTitle.setText(folder.getName() +  ( + folder.getCount() + ));
+        tvCurrentFolderTitle.setText(folder.getName() + " (" + folder.getCount() + ")");
         setupRecyclerView();
         rvMedia.setAdapter(mediaAdapter);
     }
@@ -230,7 +226,7 @@ public class LocalFragment extends Fragment {
         Map<String, FolderItem> folderMap = new HashMap<>();
 
         try (Cursor cursor = requireContext().getContentResolver().query(
-                collection, projection, null, null, MediaStore.Video.Media.DATE_ADDED +  DESC)) {
+                collection, projection, null, null, MediaStore.Video.Media.DATE_ADDED + " DESC")) {
 
             if (cursor != null) {
                 int idCol = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
@@ -307,23 +303,23 @@ public class LocalFragment extends Fragment {
     }
 
     private void playLastPlayedVideo() {
-        SharedPreferences resumePrefs = requireContext().getSharedPreferences(player_resume_prefs, Context.MODE_PRIVATE);
-        String lastPath = resumePrefs.getString(last_played_path, null);
-        String lastTitle = resumePrefs.getString(last_played_title, null);
+        SharedPreferences resumePrefs = requireContext().getSharedPreferences("player_resume_prefs", Context.MODE_PRIVATE);
+        String lastPath = resumePrefs.getString("last_played_path", null);
+        String lastTitle = resumePrefs.getString("last_played_title", null);
 
         if (lastPath != null && new File(lastPath).exists()) {
             Intent intent = new Intent(requireContext(), PlayerActivity.class);
-            intent.putExtra(path, lastPath);
-            intent.putExtra(title, lastTitle);
+            intent.putExtra("path", lastPath);
+            intent.putExtra("title", lastTitle);
             startActivity(intent);
         } else if (!allVideos.isEmpty()) {
             MediaItem first = allVideos.get(0);
             Intent intent = new Intent(requireContext(), PlayerActivity.class);
-            intent.putExtra(path, first.getPath());
-            intent.putExtra(title, first.getTitle());
+            intent.putExtra("path", first.getPath());
+            intent.putExtra("title", first.getTitle());
             startActivity(intent);
         } else {
-            Toast.makeText(requireContext(), No videos available to play, Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "No videos available to play", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -38,7 +38,7 @@ public class MeFragment extends Fragment {
         view.findViewById(R.id.meToolPrivateFolder).setOnClickListener(v -> showPrivateFolderDialog());
 
         view.findViewById(R.id.meToolPlaylists).setOnClickListener(v -> 
-            Toast.makeText(requireContext(), Video Playlists: 0 playlists created, Toast.LENGTH_SHORT).show());
+            Toast.makeText(requireContext(), "Video Playlists: 0 playlists created", Toast.LENGTH_SHORT).show());
 
         view.findViewById(R.id.meToolMediaManager).setOnClickListener(v -> showMediaManagerDialog());
 
@@ -51,14 +51,14 @@ public class MeFragment extends Fragment {
         });
 
         view.findViewById(R.id.meToolCloudDrive).setOnClickListener(v -> 
-            Toast.makeText(requireContext(), Cloud Drive: Google Drive / OneDrive support, Toast.LENGTH_SHORT).show());
+            Toast.makeText(requireContext(), "Cloud Drive: Google Drive / OneDrive support", Toast.LENGTH_SHORT).show());
 
         view.findViewById(R.id.meToolRecycleBin).setOnClickListener(v -> 
-            Toast.makeText(requireContext(), Recycle Bin is empty (30-day retention), Toast.LENGTH_SHORT).show());
+            Toast.makeText(requireContext(), "Recycle Bin is empty (30-day retention)", Toast.LENGTH_SHORT).show());
 
         // Vertical List Items
         view.findViewById(R.id.rowStatusSaver).setOnClickListener(v -> 
-            Toast.makeText(requireContext(), Status Saver: Scan recent messaging statuses, Toast.LENGTH_SHORT).show());
+            Toast.makeText(requireContext(), "Status Saver: Scan recent messaging statuses", Toast.LENGTH_SHORT).show());
 
         view.findViewById(R.id.rowAppTheme).setOnClickListener(v -> 
             startActivity(new Intent(requireContext(), AppThemeActivity.class)));
@@ -72,42 +72,42 @@ public class MeFragment extends Fragment {
 
     private void showPrivateFolderDialog() {
         final EditText etPin = new EditText(requireContext());
-        etPin.setHint(Enter 4-digit PIN);
+        etPin.setHint("Enter 4-digit PIN");
         etPin.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD);
 
         new AlertDialog.Builder(requireContext())
-            .setTitle(Private Folder)
-            .setMessage(Set or enter your security PIN to access encrypted videos.)
+            .setTitle("Private Folder")
+            .setMessage("Set or enter your security PIN to access encrypted videos.")
             .setView(etPin)
-            .setPositiveButton(Unlock, (dialog, which) -> {
+            .setPositiveButton("Unlock", (dialog, which) -> {
                 String pin = etPin.getText().toString();
                 if (pin.length() >= 4) {
-                    Toast.makeText(requireContext(), Private Folder unlocked (0 hidden files), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Private Folder unlocked (0 hidden files)", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(requireContext(), PIN must be at least 4 digits, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "PIN must be at least 4 digits", Toast.LENGTH_SHORT).show();
                 }
             })
-            .setNegativeButton(Cancel, null)
+            .setNegativeButton("Cancel", null)
             .show();
     }
 
     private void showMediaManagerDialog() {
         new AlertDialog.Builder(requireContext())
-            .setTitle(Media Manager)
-            .setMessage(Storage analysis:\n\n• Video storage: Scanning...\n• Audio storage: Scanning...\n• Cache & Temp: Ready to clean)
-            .setPositiveButton(Analyze Now, (d, w) -> Toast.makeText(requireContext(), Media storage analyzed, Toast.LENGTH_SHORT).show())
-            .setNegativeButton(Close, null)
+            .setTitle("Media Manager")
+            .setMessage("Storage analysis:\n\n• Video storage: Scanning...\n• Audio storage: Scanning...\n• Cache and Temp: Ready to clean")
+            .setPositiveButton("Analyze Now", (d, w) -> Toast.makeText(requireContext(), "Media storage analyzed", Toast.LENGTH_SHORT).show())
+            .setNegativeButton("Close", null)
             .show();
     }
 
     private void showLocalNetworkDialog() {
-        String[] protocols = new String[]{SMB (Windows Share), DLNA / UPnP Server, FTP Server, WebDAV};
+        String[] protocols = new String[]{"SMB (Windows Share)", "DLNA / UPnP Server", "FTP Server", "WebDAV"};
         new AlertDialog.Builder(requireContext())
-            .setTitle(Local Network Servers)
+            .setTitle("Local Network Servers")
             .setItems(protocols, (dialog, which) -> {
-                Toast.makeText(requireContext(), Scanning for  + protocols[which] +  on local Wi-Fi..., Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Scanning for " + protocols[which] + " on local Wi-Fi...", Toast.LENGTH_SHORT).show();
             })
-            .setNegativeButton(Cancel, null)
+            .setNegativeButton("Cancel", null)
             .show();
     }
 }

@@ -1,10 +1,7 @@
 package com.greensoft.greenplayer;
 
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,7 +12,6 @@ import androidx.cardview.widget.CardView;
 public class AppThemeActivity extends AppCompatActivity {
 
     private SharedPreferences prefs;
-    private TextView tvTagUsingDark;
 
     // 30 Classic theme colors matching MX Player palette
     private final int[] themeColors = new int[]{
@@ -31,27 +27,25 @@ public class AppThemeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_theme);
 
-        prefs = getSharedPreferences(green_player_settings, MODE_PRIVATE);
+        prefs = getSharedPreferences("green_player_settings", MODE_PRIVATE);
 
         ImageView btnBack = findViewById(R.id.btnBackTheme);
         btnBack.setOnClickListener(v -> finish());
-
-        tvTagUsingDark = findViewById(R.id.tvTagUsingDark);
 
         CardView cardAdaptive = findViewById(R.id.cardThemeAdaptive);
         CardView cardLight = findViewById(R.id.cardThemeLight);
         CardView cardDark = findViewById(R.id.cardThemeDark);
 
-        cardAdaptive.setOnClickListener(v -> selectThemeMode(adaptive));
-        cardLight.setOnClickListener(v -> selectThemeMode(light));
-        cardDark.setOnClickListener(v -> selectThemeMode(dark));
+        cardAdaptive.setOnClickListener(v -> selectThemeMode("adaptive"));
+        cardLight.setOnClickListener(v -> selectThemeMode("light"));
+        cardDark.setOnClickListener(v -> selectThemeMode("dark"));
 
         setupClassicGrid();
     }
 
     private void selectThemeMode(String mode) {
-        prefs.edit().putString(theme_mode, mode).apply();
-        Toast.makeText(this, Theme set to:  + mode.toUpperCase(), Toast.LENGTH_SHORT).show();
+        prefs.edit().putString("theme_mode", mode).apply();
+        Toast.makeText(this, "Theme set to: " + mode.toUpperCase(), Toast.LENGTH_SHORT).show();
     }
 
     private void setupClassicGrid() {
@@ -73,8 +67,8 @@ public class AppThemeActivity extends AppCompatActivity {
             card.setFocusable(true);
 
             card.setOnClickListener(v -> {
-                prefs.edit().putInt(theme_color, color).apply();
-                Toast.makeText(this, Color theme applied, Toast.LENGTH_SHORT).show();
+                prefs.edit().putInt("theme_color", color).apply();
+                Toast.makeText(this, "Color theme applied", Toast.LENGTH_SHORT).show();
             });
 
             grid.addView(card);

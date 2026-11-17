@@ -27,7 +27,7 @@ public class DecoderSettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_decoder);
 
-        prefs = getSharedPreferences(green_player_settings, MODE_PRIVATE);
+        prefs = getSharedPreferences("green_player_settings", MODE_PRIVATE);
 
         ImageView btnBack = findViewById(R.id.btnBackDecoder);
         btnBack.setOnClickListener(v -> finish());
@@ -37,18 +37,18 @@ public class DecoderSettingsActivity extends AppCompatActivity {
         CheckBox cbSwAudio = findViewById(R.id.cbSwAudio);
         tvCustomCodecPath = findViewById(R.id.tvCustomCodecPath);
 
-        cbHwPlusVideo.setChecked(prefs.getBoolean(hw_plus_video, true));
-        cbHwPlusAudio.setChecked(prefs.getBoolean(hw_plus_audio, true));
-        cbSwAudio.setChecked(prefs.getBoolean(sw_audio, false));
+        cbHwPlusVideo.setChecked(prefs.getBoolean("hw_plus_video", true));
+        cbHwPlusAudio.setChecked(prefs.getBoolean("hw_plus_audio", true));
+        cbSwAudio.setChecked(prefs.getBoolean("sw_audio", false));
 
-        String savedCodec = prefs.getString(custom_codec_path, null);
+        String savedCodec = prefs.getString("custom_codec_path", null);
         if (savedCodec != null) {
             tvCustomCodecPath.setText(savedCodec);
         }
 
-        cbHwPlusVideo.setOnCheckedChangeListener((b, isChecked) -> prefs.edit().putBoolean(hw_plus_video, isChecked).apply());
-        cbHwPlusAudio.setOnCheckedChangeListener((b, isChecked) -> prefs.edit().putBoolean(hw_plus_audio, isChecked).apply());
-        cbSwAudio.setOnCheckedChangeListener((b, isChecked) -> prefs.edit().putBoolean(sw_audio, isChecked).apply());
+        cbHwPlusVideo.setOnCheckedChangeListener((b, isChecked) -> prefs.edit().putBoolean("hw_plus_video", isChecked).apply());
+        cbHwPlusAudio.setOnCheckedChangeListener((b, isChecked) -> prefs.edit().putBoolean("hw_plus_audio", isChecked).apply());
+        cbSwAudio.setOnCheckedChangeListener((b, isChecked) -> prefs.edit().putBoolean("sw_audio", isChecked).apply());
 
         findViewById(R.id.layoutCustomCodec).setOnClickListener(v -> showCustomCodecPickerDialog());
     }
@@ -72,7 +72,7 @@ public class DecoderSettingsActivity extends AppCompatActivity {
             }
         }
         if (fileNames.isEmpty()) {
-            fileNames.add(No custom codec zip/so files found in Download);
+            fileNames.add("No custom codec zip/so files found in Download");
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileNames);
@@ -84,10 +84,10 @@ public class DecoderSettingsActivity extends AppCompatActivity {
 
         lvFiles.setOnItemClickListener((parent, view, position, id) -> {
             String selected = fileNames.get(position);
-            if (!selected.startsWith(No custom)) {
-                prefs.edit().putString(custom_codec_path, selected).apply();
+            if (!selected.startsWith("No custom")) {
+                prefs.edit().putString("custom_codec_path", selected).apply();
                 tvCustomCodecPath.setText(selected);
-                Toast.makeText(this, Selected:  + selected, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Selected: " + selected, Toast.LENGTH_SHORT).show();
             }
             dialog.dismiss();
         });
