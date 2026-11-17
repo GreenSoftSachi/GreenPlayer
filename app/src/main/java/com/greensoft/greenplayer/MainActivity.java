@@ -184,16 +184,12 @@ public class MainActivity extends AppCompatActivity {
         TextView btnList = dialogView.findViewById(R.id.btnLayoutList);
         TextView btnGrid = dialogView.findViewById(R.id.btnLayoutGrid);
 
-        TextView sortTitle = dialogView.findViewById(R.id.sortTitle);
-        TextView sortDate = dialogView.findViewById(R.id.sortDate);
-        TextView sortPlayedTime = dialogView.findViewById(R.id.sortPlayedTime);
-        TextView sortStatus = dialogView.findViewById(R.id.sortStatus);
-        TextView sortLength = dialogView.findViewById(R.id.sortLength);
-        TextView sortSize = dialogView.findViewById(R.id.sortSize);
-        TextView sortResolution = dialogView.findViewById(R.id.sortResolution);
-        TextView sortPath = dialogView.findViewById(R.id.sortPath);
-        TextView sortFrameRate = dialogView.findViewById(R.id.sortFrameRate);
-        TextView sortType = dialogView.findViewById(R.id.sortType);
+        View sortTitle = dialogView.findViewById(R.id.sortTitle);
+        View sortDate = dialogView.findViewById(R.id.sortDate);
+        View sortPlayedTime = dialogView.findViewById(R.id.sortPlayedTime);
+        View sortLength = dialogView.findViewById(R.id.sortLength);
+        View sortSize = dialogView.findViewById(R.id.sortSize);
+        View sortResolution = dialogView.findViewById(R.id.sortResolution);
 
         final int[] chosenView = new int[]{LocalFragment.VIEW_FOLDERS};
         final int[] chosenLayout = new int[]{LocalFragment.LAYOUT_LIST};
@@ -203,34 +199,35 @@ public class MainActivity extends AppCompatActivity {
                 .setView(dialogView)
                 .create();
 
-        btnViewAll.setOnClickListener(v -> chosenView[0] = LocalFragment.VIEW_ALL_FOLDERS);
-        btnViewFiles.setOnClickListener(v -> chosenView[0] = LocalFragment.VIEW_FILES);
-        btnViewFolders.setOnClickListener(v -> chosenView[0] = LocalFragment.VIEW_FOLDERS);
+        if (btnViewAll != null) btnViewAll.setOnClickListener(v -> chosenView[0] = LocalFragment.VIEW_ALL_FOLDERS);
+        if (btnViewFiles != null) btnViewFiles.setOnClickListener(v -> chosenView[0] = LocalFragment.VIEW_FILES);
+        if (btnViewFolders != null) btnViewFolders.setOnClickListener(v -> chosenView[0] = LocalFragment.VIEW_FOLDERS);
 
-        btnList.setOnClickListener(v -> chosenLayout[0] = LocalFragment.LAYOUT_LIST);
-        btnGrid.setOnClickListener(v -> chosenLayout[0] = LocalFragment.LAYOUT_GRID);
+        if (btnList != null) btnList.setOnClickListener(v -> chosenLayout[0] = LocalFragment.LAYOUT_LIST);
+        if (btnGrid != null) btnGrid.setOnClickListener(v -> chosenLayout[0] = LocalFragment.LAYOUT_GRID);
 
-        sortTitle.setOnClickListener(v -> chosenSort[0] = 0);
-        sortDate.setOnClickListener(v -> chosenSort[0] = 1);
-        sortSize.setOnClickListener(v -> chosenSort[0] = 2);
-        sortLength.setOnClickListener(v -> chosenSort[0] = 3);
-        sortPlayedTime.setOnClickListener(v -> chosenSort[0] = 1);
-        sortStatus.setOnClickListener(v -> chosenSort[0] = 1);
-        sortResolution.setOnClickListener(v -> chosenSort[0] = 2);
-        sortPath.setOnClickListener(v -> chosenSort[0] = 0);
-        sortFrameRate.setOnClickListener(v -> chosenSort[0] = 1);
-        sortType.setOnClickListener(v -> chosenSort[0] = 0);
+        if (sortTitle != null) sortTitle.setOnClickListener(v -> chosenSort[0] = 0);
+        if (sortDate != null) sortDate.setOnClickListener(v -> chosenSort[0] = 1);
+        if (sortSize != null) sortSize.setOnClickListener(v -> chosenSort[0] = 2);
+        if (sortLength != null) sortLength.setOnClickListener(v -> chosenSort[0] = 3);
+        if (sortPlayedTime != null) sortPlayedTime.setOnClickListener(v -> chosenSort[0] = 1);
+        if (sortResolution != null) sortResolution.setOnClickListener(v -> chosenSort[0] = 2);
 
-        dialogView.findViewById(R.id.btnCancelViewSort).setOnClickListener(v -> dialog.dismiss());
-        dialogView.findViewById(R.id.btnDoneViewSort).setOnClickListener(v -> {
-            if (localFragment != null) {
-                localFragment.setViewMode(chosenView[0]);
-                localFragment.setLayoutMode(chosenLayout[0]);
-                localFragment.setSortCriteria(chosenSort[0]);
-                tvMainTitle.setText(chosenView[0] == LocalFragment.VIEW_FOLDERS ? "Folders" : "Videos");
-            }
-            dialog.dismiss();
-        });
+        View btnCancel = dialogView.findViewById(R.id.btnCancelSort);
+        if (btnCancel != null) btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        View btnDone = dialogView.findViewById(R.id.btnDoneSort);
+        if (btnDone != null) {
+            btnDone.setOnClickListener(v -> {
+                if (localFragment != null) {
+                    localFragment.setViewMode(chosenView[0]);
+                    localFragment.setLayoutMode(chosenLayout[0]);
+                    localFragment.setSortCriteria(chosenSort[0]);
+                    tvMainTitle.setText(chosenView[0] == LocalFragment.VIEW_FOLDERS ? "Folders" : "Videos");
+                }
+                dialog.dismiss();
+            });
+        }
 
         dialog.show();
     }
