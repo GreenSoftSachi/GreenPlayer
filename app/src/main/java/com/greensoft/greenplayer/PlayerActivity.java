@@ -1,9 +1,10 @@
 package com.greensoft.greenplayer;
 
+import android.app.Activity;
 import android.app.PictureInPictureParams;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.net.Uri;
@@ -20,28 +21,32 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.media3.common.AudioAttributes;
 import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
+import androidx.media3.common.MimeTypes;
 import androidx.media3.common.PlaybackParameters;
 import androidx.media3.common.Player;
 import androidx.media3.common.TrackGroup;
 import androidx.media3.common.TrackSelectionOverride;
 import androidx.media3.common.Tracks;
+import androidx.media3.exoplayer.DefaultRenderersFactory;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.ui.AspectRatioFrameLayout;
 import androidx.media3.ui.PlayerView;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -67,6 +72,7 @@ public class PlayerActivity extends AppCompatActivity {
     private String videoPath;
     private String videoTitle;
     private SharedPreferences resumePrefs;
+    private boolean hasResumed = false;
 
     private boolean isControlsShowing = true;
     private boolean isLocked = false;
@@ -81,9 +87,11 @@ public class PlayerActivity extends AppCompatActivity {
     private long swipeSeekTarget = 0;
     private static final int GESTURE_THRESHOLD = 30;
 
-    // Aspect ratio modes: 0=FIT, 1=CROP, 2=FILL/STRETCH
+    // Aspect ratio modes: 0=FIT, 1=CROP, 2=FILL/STRETCH, 3=ORIGINAL
     private int currentAspectMode = 0;
     private float currentSpeed = 1.0f;
+
+    private ActivityResultLauncher<Intent> subtitlePickerLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,16 +107,31 @@ public class PlayerActivity extends AppCompatActivity {
             videoTitle = new File(videoPath).getName();
         }
 
-        resumePrefs = getSharedPreferences("green_player_resume", Context.MODE_PRIVATE);
+        resumePrefs = getSharedPreferences("player_resume_prefs", Context.MODE_PRIVATE);
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         if (audioManager != null) {
             maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         }
 
+        registerSubtitlePicker();
         initViews();
         setupPlayer();
         setupGestures();
         setupClickListeners();
+    }
+
+    private void registerSubtitlePicker() {
+        subtitlePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        Uri subUri = result.getData().getData();
+                        if (subUri != null) {
+                            loadExternalSubtitle(subUri);
+                        }
+                    }
+                }
+        );
     }
 
     private void initViews() {
@@ -161,7 +184,12 @@ public class PlayerActivity extends AppCompatActivity {
                 .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
                 .build();
 
-        player = new ExoPlayer.Builder(this)
+        // Advanced Renderers Factory with Hardware + Software fallback for HEVC 10-bit, Dolby Vision & 6CH Audio
+        DefaultRenderersFactory renderersFactory = new DefaultRenderersFactory(this)
+                .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER)
+                .setEnableDecoderFallback(true);
+
+        player = new ExoPlayer.Builder(this, renderersFactory)
                 .setAudioAttributes(audioAttributes, true)
                 .setSeekBackIncrementMs(10000)
                 .setSeekForwardIncrementMs(10000)
@@ -169,23 +197,21 @@ public class PlayerActivity extends AppCompatActivity {
 
         playerView.setPlayer(player);
 
-        androidx.media3.common.MediaItem mediaItem;
+        Uri uri;
         if (videoPath.startsWith("http://") || videoPath.startsWith("https://") || videoPath.startsWith("content://")) {
-            mediaItem = androidx.media3.common.MediaItem.fromUri(Uri.parse(videoPath));
+            uri = Uri.parse(videoPath);
         } else {
-            mediaItem = androidx.media3.common.MediaItem.fromUri(Uri.fromFile(new File(videoPath)));
+            uri = Uri.fromFile(new File(videoPath));
         }
 
+        MediaItem mediaItem = MediaItem.fromUri(uri);
         player.setMediaItem(mediaItem);
         player.prepare();
-
-        // Restore playback position
-        long resumePos = resumePrefs.getLong(videoPath, 0);
-        if (resumePos > 3000) {
-            player.seekTo(resumePos);
-        }
-
         player.setPlayWhenReady(true);
+
+        // Resume position from intent or saved preferences
+        long intentResumePos = getIntent().getLongExtra("resume_pos", -1);
+        long targetResume = intentResumePos > 3000 ? intentResumePos : resumePrefs.getLong(videoPath, 0);
 
         player.addListener(new Player.Listener() {
             @Override
@@ -205,23 +231,64 @@ public class PlayerActivity extends AppCompatActivity {
                         playerSeekBar.setMax((int) dur);
                         tvDuration.setText(formatTime(dur));
                     }
+                    if (!hasResumed && targetResume > 3000 && targetResume < dur) {
+                        hasResumed = true;
+                        player.seekTo(targetResume);
+                        showToast("Resumed from " + formatTime(targetResume) + " ⏱️");
+                    }
                 } else if (state == Player.STATE_ENDED) {
                     resumePrefs.edit().remove(videoPath).apply();
                 }
             }
         });
 
-        // Seekbar updater
         startProgressUpdater();
+    }
+
+    private void loadExternalSubtitle(Uri subUri) {
+        if (player == null || videoPath == null) return;
+        try {
+            String uriStr = subUri.toString().toLowerCase();
+            String mime = MimeTypes.APPLICATION_SUBRIP;
+            if (uriStr.endsWith(".vtt")) {
+                mime = MimeTypes.TEXT_VTT;
+            } else if (uriStr.endsWith(".ssa") || uriStr.endsWith(".ass")) {
+                mime = MimeTypes.TEXT_SSA;
+            }
+
+            MediaItem.SubtitleConfiguration subConfig = new MediaItem.SubtitleConfiguration.Builder(subUri)
+                    .setMimeType(mime)
+                    .setLanguage("External")
+                    .setLabel("External Subtitle")
+                    .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
+                    .build();
+
+            Uri baseUri = videoPath.startsWith("content://") || videoPath.startsWith("http")
+                    ? Uri.parse(videoPath)
+                    : Uri.fromFile(new File(videoPath));
+
+            long currentPos = player.getCurrentPosition();
+            boolean wasPlaying = player.isPlaying();
+
+            MediaItem updatedItem = new MediaItem.Builder()
+                    .setUri(baseUri)
+                    .setSubtitleConfigurations(Collections.singletonList(subConfig))
+                    .build();
+
+            player.setMediaItem(updatedItem);
+            player.seekTo(currentPos);
+            player.prepare();
+            player.setPlayWhenReady(wasPlaying);
+
+            showToast("External Subtitle Loaded! 💬");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showToast("Failed to load subtitle file");
+        }
     }
 
     private void setupGestures() {
         GestureDetector tapDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public void onLongPress(MotionEvent e) {
-                super.onLongPress(e);
-            }
-
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
                 if (isLocked) {
@@ -238,21 +305,18 @@ public class PlayerActivity extends AppCompatActivity {
                 float x = e.getX();
                 int width = gestureTouchView.getWidth();
                 if (x < width * 0.35f) {
-                    // Rewind 10s
-                    long target = Math.max(0, player.getCurrentPosition() - 10000);
-                    player.seekTo(target);
-                    showToast("-10s ⏪");
+                    player.seekTo(Math.max(0, player.getCurrentPosition() - 10000));
+                    showToast("-10 sec ⏪");
+                    return true;
                 } else if (x > width * 0.65f) {
-                    // Forward 10s
-                    long target = Math.min(player.getDuration(), player.getCurrentPosition() + 10000);
-                    player.seekTo(target);
-                    showToast("+10s ⏩");
+                    player.seekTo(Math.min(player.getDuration(), player.getCurrentPosition() + 10000));
+                    showToast("+10 sec ⏩");
+                    return true;
                 } else {
-                    // Toggle Play / Pause
                     if (player.isPlaying()) player.pause();
                     else player.play();
+                    return true;
                 }
-                return true;
             }
         });
 
@@ -260,52 +324,55 @@ public class PlayerActivity extends AppCompatActivity {
             tapDetector.onTouchEvent(event);
             if (isLocked) return true;
 
+            int action = event.getAction();
+            float x = event.getX();
+            float y = event.getY();
             int width = gestureTouchView.getWidth();
             int height = gestureTouchView.getHeight();
 
-            switch (event.getAction()) {
+            switch (action) {
                 case MotionEvent.ACTION_DOWN:
-                    touchStartX = event.getX();
-                    touchStartY = event.getY();
+                    touchStartX = x;
+                    touchStartY = y;
                     isSwipeVolume = false;
                     isSwipeBrightness = false;
                     isSwipeSeek = false;
                     break;
 
                 case MotionEvent.ACTION_MOVE:
-                    float dx = event.getX() - touchStartX;
-                    float dy = event.getY() - touchStartY;
+                    float dx = x - touchStartX;
+                    float dy = y - touchStartY;
 
                     if (!isSwipeVolume && !isSwipeBrightness && !isSwipeSeek) {
-                        if (Math.abs(dy) > GESTURE_THRESHOLD && Math.abs(dy) > Math.abs(dx)) {
+                        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > GESTURE_THRESHOLD) {
+                            isSwipeSeek = true;
+                            if (player != null) swipeSeekTarget = player.getCurrentPosition();
+                        } else if (Math.abs(dy) > GESTURE_THRESHOLD) {
                             if (touchStartX > width * 0.5f) {
                                 isSwipeVolume = true;
                             } else {
                                 isSwipeBrightness = true;
                             }
-                        } else if (Math.abs(dx) > GESTURE_THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
-                            isSwipeSeek = true;
-                            if (player != null) swipeSeekTarget = player.getCurrentPosition();
                         }
                     }
 
                     if (isSwipeVolume) {
-                        handleVolumeSwipe(-dy / height);
+                        handleVolumeSwipe(-dy, height);
                     } else if (isSwipeBrightness) {
-                        handleBrightnessSwipe(-dy / height);
-                    } else if (isSwipeSeek && player != null) {
-                        handleSeekSwipe(dx / width);
+                        handleBrightnessSwipe(-dy, height);
+                    } else if (isSwipeSeek) {
+                        handleSeekSwipe(dx, width);
                     }
                     break;
 
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
-                    hudVolume.setVisibility(View.GONE);
-                    hudBrightness.setVisibility(View.GONE);
                     if (isSwipeSeek && player != null) {
-                        hudSeek.setVisibility(View.GONE);
                         player.seekTo(swipeSeekTarget);
                     }
+                    hudVolume.setVisibility(View.GONE);
+                    hudBrightness.setVisibility(View.GONE);
+                    hudSeek.setVisibility(View.GONE);
                     scheduleAutoHide();
                     break;
             }
@@ -313,40 +380,46 @@ public class PlayerActivity extends AppCompatActivity {
         });
     }
 
-    private void handleVolumeSwipe(float delta) {
+    private void handleVolumeSwipe(float deltaY, int height) {
         if (audioManager == null) return;
-        int current = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        int change = (int) (delta * maxVolume * 2);
-        int target = Math.max(0, Math.min(maxVolume, current + change));
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, target, 0);
+        float percentChange = deltaY / height;
+        int currentVol = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        int newVol = (int) (currentVol + (percentChange * maxVolume * 0.1f));
+        newVol = Math.max(0, Math.min(maxVolume, newVol));
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVol, 0);
 
-        int percent = (int) ((target / (float) maxVolume) * 100);
         hudVolume.setVisibility(View.VISIBLE);
-        pbVolume.setProgress(percent);
+        pbVolume.setMax(maxVolume);
+        pbVolume.setProgress(newVol);
+        int percent = (int) (((float) newVol / maxVolume) * 100);
         tvVolumePercent.setText(percent + "%");
     }
 
-    private void handleBrightnessSwipe(float delta) {
+    private void handleBrightnessSwipe(float deltaY, int height) {
         WindowManager.LayoutParams lp = getWindow().getAttributes();
-        if (currentBrightness < 0) {
-            currentBrightness = lp.screenBrightness;
-            if (currentBrightness < 0) currentBrightness = 0.5f;
-        }
-        currentBrightness = Math.max(0.01f, Math.min(1.0f, currentBrightness + (delta * 0.5f)));
+        if (currentBrightness < 0) currentBrightness = lp.screenBrightness;
+        if (currentBrightness < 0) currentBrightness = 0.5f;
+
+        float percentChange = deltaY / height;
+        currentBrightness = Math.max(0.01f, Math.min(1.0f, currentBrightness + percentChange * 0.1f));
         lp.screenBrightness = currentBrightness;
         getWindow().setAttributes(lp);
 
-        int percent = (int) (currentBrightness * 100);
         hudBrightness.setVisibility(View.VISIBLE);
+        pbBrightness.setMax(100);
+        int percent = (int) (currentBrightness * 100);
         pbBrightness.setProgress(percent);
         tvBrightnessPercent.setText(percent + "%");
     }
 
-    private void handleSeekSwipe(float deltaPercent) {
-        if (player == null || player.getDuration() <= 0) return;
+    private void handleSeekSwipe(float deltaX, int width) {
+        if (player == null) return;
         long duration = player.getDuration();
-        long diff = (long) (deltaPercent * 180000); // Max 3 minutes scrub
-        swipeSeekTarget = Math.max(0, Math.min(duration, player.getCurrentPosition() + diff));
+        if (duration <= 0) return;
+
+        long current = player.getCurrentPosition();
+        long diff = (long) ((deltaX / width) * 90000); // Max 90s seek per swipe
+        swipeSeekTarget = Math.max(0, Math.min(duration, current + diff));
 
         hudSeek.setVisibility(View.VISIBLE);
         String sign = diff >= 0 ? "+" : "-";
@@ -496,7 +569,7 @@ public class PlayerActivity extends AppCompatActivity {
         }
 
         if (trackNames.isEmpty()) {
-            showToast("Only 1 audio track available");
+            showToast("Only 1 audio track available (5.1 Downmix Active)");
             return;
         }
 
@@ -535,6 +608,10 @@ public class PlayerActivity extends AppCompatActivity {
             }
         }
 
+        // Add Option to browse external subtitle file
+        subNames.add("📂 Open External Subtitle (.srt / .vtt)");
+        subGroups.add(null);
+
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.subtitles))
                 .setItems(subNames.toArray(new String[0]), (dialog, which) -> {
@@ -544,6 +621,12 @@ public class PlayerActivity extends AppCompatActivity {
                                 .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
                                 .build());
                         showToast("Subtitles Off");
+                    } else if (which == subNames.size() - 1) {
+                        // Open file picker
+                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType("*/*");
+                        subtitlePickerLauncher.launch(intent);
                     } else {
                         TrackGroup group = subGroups.get(which);
                         player.setTrackSelectionParameters(player.getTrackSelectionParameters()
@@ -663,6 +746,8 @@ public class PlayerActivity extends AppCompatActivity {
         if (player != null) {
             if (videoPath != null && player.getCurrentPosition() > 0) {
                 resumePrefs.edit().putLong(videoPath, player.getCurrentPosition()).apply();
+                resumePrefs.edit().putString("last_played_path", videoPath).apply();
+                resumePrefs.edit().putString("last_played_title", videoTitle).apply();
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && isInPictureInPictureMode()) {
                 // Continue in PiP
@@ -679,6 +764,8 @@ public class PlayerActivity extends AppCompatActivity {
         if (player != null) {
             if (videoPath != null && player.getCurrentPosition() > 0) {
                 resumePrefs.edit().putLong(videoPath, player.getCurrentPosition()).apply();
+                resumePrefs.edit().putString("last_played_path", videoPath).apply();
+                resumePrefs.edit().putString("last_played_title", videoTitle).apply();
             }
             player.release();
             player = null;

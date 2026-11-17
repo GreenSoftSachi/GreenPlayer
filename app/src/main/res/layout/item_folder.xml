@@ -4,44 +4,50 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingHorizontal="16dp"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="6dp"
+    android:paddingHorizontal="14dp"
     android:paddingVertical="12dp"
-    android:background="?attr/selectableItemBackground">
+    android:background="@drawable/bg_glass_card"
+    android:foreground="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
 
-    <!-- Folder Icon with Red Count Badge -->
+    <!-- Glowing Frosted Folder Icon with Count Badge -->
     <FrameLayout
-        android:layout_width="52dp"
-        android:layout_height="52dp">
+        android:layout_width="54dp"
+        android:layout_height="54dp">
 
         <ImageView
             android:id="@+id/ivFolderIcon"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
             android:layout_gravity="center"
-            android:src="@android:drawable/ic_menu_agenda"
-            android:tint="@color/green_primary" />
+            android:src="@drawable/ic_folder_glass" />
 
-        <!-- Red Badge -->
+        <!-- Notification Badge -->
         <TextView
             android:id="@+id/tvFolderBadge"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:minWidth="22dp"
+            android:layout_height="22dp"
             android:layout_gravity="top|end"
             android:background="@drawable/bg_badge_red"
             android:gravity="center"
+            android:paddingHorizontal="4dp"
             android:text="1"
             android:textColor="#FFFFFF"
-            android:textSize="10sp"
+            android:textSize="11sp"
             android:textStyle="bold" />
 
     </FrameLayout>
 
-    <!-- Folder Name & Subtext -->
+    <!-- Folder Name & Video Count -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="14dp"
         android:orientation="vertical">
 
         <TextView
@@ -50,7 +56,7 @@
             android:layout_height="wrap_content"
             android:text="Folder Name"
             android:textColor="@color/text_primary"
-            android:textSize="15sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:singleLine="true"
             android:ellipsize="end" />
@@ -59,11 +65,18 @@
             android:id="@+id/tvFolderVideoCount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:text="5 videos"
-            android:textColor="@color/text_secondary"
+            android:layout_marginTop="3dp"
+            android:text="1 video"
+            android:textColor="@color/text_mint"
             android:textSize="12sp" />
 
     </LinearLayout>
+
+    <!-- Sleek Arrow Indicator -->
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@android:drawable/ic_media_play"
+        android:tint="#4D00E676" />
 
 </LinearLayout>

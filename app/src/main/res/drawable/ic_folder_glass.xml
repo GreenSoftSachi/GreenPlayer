@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <!-- Back Tab of Folder -->
+    <path
+        android:fillColor="#3300E676"
+        android:pathData="M6,10 L18,10 L22,14 L42,14 C43.1,14 44,14.9 44,16 L44,22 L6,22 Z" />
+    <!-- Front Body of Folder -->
+    <path
+        android:fillColor="#E60F2B1D"
+        android:strokeColor="#00E676"
+        android:strokeWidth="1.8"
+        android:pathData="M6,16 L42,16 C43.1,16 44,16.9 44,18 L44,38 C44,39.1 43.1,40 42,40 L6,40 C4.9,40 4,39.1 4,38 L4,18 C4,16.9 4.9,16 6,16 Z" />
+    <!-- Center Play/Film Accent in Folder -->
+    <path
+        android:fillColor="#00E676"
+        android:pathData="M21,24 L30,29 L21,34 Z" />
+</vector>

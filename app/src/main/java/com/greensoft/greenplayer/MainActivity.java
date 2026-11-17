@@ -33,13 +33,14 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView mainBottomNav;
     private TextView tvMainTitle;
     private EditText etSearch;
-    private ImageButton btnToggleViewMode, btnSearch, btnViewSortDialog;
+    private ImageButton btnToggleViewMode, btnSearch, btnViewSortDialog, btnMainSettings;
 
     private LocalFragment localFragment;
     private MusicFragment musicFragment;
     private TransferFragment transferFragment;
     private MeFragment meFragment;
 
+    private long lastBackPressedTime = 0;
     private final String[] tabTitles = new String[]{"Folders", "Music", "Transfer", "Me"};
 
     @Override
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         btnToggleViewMode = findViewById(R.id.btnToggleViewMode);
         btnSearch = findViewById(R.id.btnSearch);
         btnViewSortDialog = findViewById(R.id.btnViewSortDialog);
+        btnMainSettings = findViewById(R.id.btnMainSettings);
     }
 
     private void setupViewPager() {
@@ -148,9 +150,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        if (btnMainSettings != null) {
+            btnMainSettings.setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
+        }
+
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override public void onTextChanged(CharSequence s, int start, before, int count) {
                 if (mainViewPager.getCurrentItem() == 0 && localFragment != null) {
                     localFragment.filter(s.toString());
                 }
@@ -199,12 +205,48 @@ public class MainActivity extends AppCompatActivity {
                 .setView(dialogView)
                 .create();
 
-        if (btnViewAll != null) btnViewAll.setOnClickListener(v -> chosenView[0] = LocalFragment.VIEW_ALL_FOLDERS);
-        if (btnViewFiles != null) btnViewFiles.setOnClickListener(v -> chosenView[0] = LocalFragment.VIEW_FILES);
-        if (btnViewFolders != null) btnViewFolders.setOnClickListener(v -> chosenView[0] = LocalFragment.VIEW_FOLDERS);
+        int greenColor = ContextCompat.getColor(this, R.color.green_primary);
+        int grayColor = ContextCompat.getColor(this, R.color.text_secondary);
 
-        if (btnList != null) btnList.setOnClickListener(v -> chosenLayout[0] = LocalFragment.LAYOUT_LIST);
-        if (btnGrid != null) btnGrid.setOnClickListener(v -> chosenLayout[0] = LocalFragment.LAYOUT_GRID);
+        if (btnViewAll != null) {
+            btnViewAll.setOnClickListener(v -> {
+                chosenView[0] = LocalFragment.VIEW_ALL_FOLDERS;
+                btnViewAll.setTextColor(greenColor);
+                if (btnViewFiles != null) btnViewFiles.setTextColor(grayColor);
+                if (btnViewFolders != null) btnViewFolders.setTextColor(grayColor);
+            });
+        }
+        if (btnViewFiles != null) {
+            btnViewFiles.setOnClickListener(v -> {
+                chosenView[0] = LocalFragment.VIEW_FILES;
+                btnViewFiles.setTextColor(greenColor);
+                if (btnViewAll != null) btnViewAll.setTextColor(grayColor);
+                if (btnViewFolders != null) btnViewFolders.setTextColor(grayColor);
+            });
+        }
+        if (btnViewFolders != null) {
+            btnViewFolders.setOnClickListener(v -> {
+                chosenView[0] = LocalFragment.VIEW_FOLDERS;
+                btnViewFolders.setTextColor(greenColor);
+                if (btnViewAll != null) btnViewAll.setTextColor(grayColor);
+                if (btnViewFiles != null) btnViewFiles.setTextColor(grayColor);
+            });
+        }
+
+        if (btnList != null) {
+            btnList.setOnClickListener(v -> {
+                chosenLayout[0] = LocalFragment.LAYOUT_LIST;
+                btnList.setTextColor(greenColor);
+                if (btnGrid != null) btnGrid.setTextColor(grayColor);
+            });
+        }
+        if (btnGrid != null) {
+            btnGrid.setOnClickListener(v -> {
+                chosenLayout[0] = LocalFragment.LAYOUT_GRID;
+                btnGrid.setTextColor(greenColor);
+                if (btnList != null) btnList.setTextColor(grayColor);
+            });
+        }
 
         if (sortTitle != null) sortTitle.setOnClickListener(v -> chosenSort[0] = 0);
         if (sortDate != null) sortDate.setOnClickListener(v -> chosenSort[0] = 1);
@@ -230,6 +272,29 @@ public class MainActivity extends AppCompatActivity {
         }
 
         dialog.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // 1. If currently inside a folder in LocalFragment, step back to folder list
+        if (mainViewPager != null && mainViewPager.getCurrentItem() == 0 && localFragment != null && localFragment.isInFolderView()) {
+            localFragment.exitFolderView();
+            return;
+        }
+
+        // 2. If in another tab (Music, Transfer, Me), switch back to Local tab
+        if (mainViewPager != null && mainViewPager.getCurrentItem() != 0) {
+            mainViewPager.setCurrentItem(0, true);
+            return;
+        }
+
+        // 3. Double-tap to exit on root screen
+        if (System.currentTimeMillis() - lastBackPressedTime < 2000) {
+            super.onBackPressed();
+        } else {
+            lastBackPressedTime = System.currentTimeMillis();
+            Toast.makeText(this, "Press back again to exit Green Player", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void checkAndRequestPermissions() {

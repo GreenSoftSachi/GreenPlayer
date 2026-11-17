@@ -32,35 +32,46 @@ jobs:
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: GreenPlayer-v1.1.0-APK
+        name: GreenPlayer-v1.2.0-APK
         path: app/build/outputs/apk/debug/app-debug.apk
         retention-days: 30
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v1.1.0
-        name: "Green Player v1.1.0 (Advanced Pro Release)"
+        tag_name: v1.2.0
+        name: "Green Player v1.2.0 (Frosted Arctic Emerald & Custom FFmpeg Codecs)"
         body: |
-          ## 🟢 Green Player v1.1.0 - Full MX Player Clone Suite
+          ## 🟢 Green Player v1.2.0 - Frosted Arctic Emerald & Advanced Codec Suite
           
-          ### 📱 New Features & Screens:
-          * 📁 **Folder Browser with Red Count Badges**: Shows video counts (1, 2, 5, 13, 99+) just like MX Player.
-          * ⚡ **6 Quick Tools Bar**: Music, File Transfer, Status Saver, My Playlists, Cleaner, Privacy.
-          * 🎛️ **View Mode & Sort Dialog**: All folders, Files, Folders / List, Grid / 10 sort criteria (Title, Date, Played time, Status, Length, Size, Resolution, Path, Frame rate, Type).
-          * 🧭 **4-Tab Navigation**: Local, Music, Transfer, Me.
-          * 🎵 **Music Player Suite**: Sub-tabs (Tracks, Playlists, Albums, Artists, Folders), Search Songs, Shuffle All.
-          * 📡 **Transfer Screen**: High-speed P2P send/receive + Web/PC browser download server.
-          * 👤 **Me Profile Hub**: 8-tool grid (File Transfer, Private Folder, Video Playlists, Media Manager, Local Network, Music Player, Cloud Drive, Recycle Bin).
-          * 🎨 **App Theme Chooser**: Adaptive, Light Theme, Dark Theme + 30-color classic theme palette + Zodiac themes.
-          * 🪟 **Custom Pop-up Play**: Previous/Next vs Fast Forward/Rewind toggle.
-          * ⚙️ **Comprehensive Settings Hierarchy**:
-            * **List**: Last media in folder, scroll to last played, thumbnail selection, floating button, "NEW" badge periods.
-            * **Player**: Resume prompt behavior, remember selections, fast seeking, preview while seeking.
-            * **Decoder**: HW+ video/audio decoders, SW audio, Custom Codec browser.
-            * **Audio**: Audio player background mode, 200% volume boost, audio delay sync, equalizer.
-            * **Subtitle**: Global character encoding selector (UTF-8, UTF-16, Cyrillic, Greek, Hebrew, Windows-1252, Shift_JIS, etc.), text sizing, colors.
-            * **General**: Localization (English, Sinhala, Spanish, etc.), cache cleaner, history reset.
+          ### 🚀 Major Improvements & Fixes in v1.2.0:
+          * ❄️ **Frosted Arctic Emerald Glassmorphism (Theme 2)**:
+            * High-quality smoky acrylic glass cards with subtle luminous emerald borders.
+            * Redesigned folder cards with glowing vector folder art and count badges (`1`, `2`, `5`, `13`, `99+`).
+          * 🎬 **4K HEVC 10-bit & Dolby Vision Profile 8.1 Playback**:
+            * Automatic fallback to 10-bit HDR10 color base layer (`BL+RPU`) on devices without proprietary Dolby Vision hardware.
+            * Fixes black screen and codec initialization errors on heavy WEBRip / DSNP movies.
+          * 🔊 **Custom FFmpeg Codecs (`libffmpeg.so`) & 6-Channel Audio**:
+            * Bundled native FFmpeg libraries for `arm64-v8a`, `armeabi-v7a`, `x86`, and `x86_64`.
+            * Software downmixing for 6-Channel (5.1 Surround) HE-AAC, AC3, and E-AC3 Dolby Atmos to ensure crisp dialogue audio on stereo device speakers and headphones.
+          * 🔙 **Smart Back Navigation**:
+            * Pressing Back inside a folder now smoothly returns to the Folder list instead of exiting the app.
+            * Pressing Back on any tab (Music, Transfer, Me) returns to the Local Videos tab.
+            * Double-tap back required on root screen to prevent accidental app exits.
+          * 🧹 **Junk / System Video Cleaner**:
+            * Automatic filter excluding files under 200 KB or under 3 seconds duration (purges 00:00 development cache/dummy files).
+            * Ignores hidden folders (`.`, `/Android/data/`, `/cache/`).
+          * 💬 **External Subtitle File Loader**:
+            * Easily browse and attach external `.srt`, `.vtt`, `.sub`, and `.ass` subtitles directly from your device storage.
+          * ⚙️ **Direct Toolbar Settings Gear Icon**:
+            * One-tap access to Settings from the top bar.
+          * 🎛️ **View Mode & Grid Toggle**:
+            * Switch seamlessly between Folders and All Files view.
+            * 2-column Grid mode for high-density folder and video browsing with live selection feedback.
+          * ⏱️ **Floating Play Button Resume**:
+            * Bottom right play button now seeks directly to the exact paused timestamp (`Resumed from XX:XX`).
+          * 📐 **Screen Aspect Ratio Cycling**:
+            * Toggle between Fit to Screen, Zoom / Crop, Stretch to Fill, and 100% Original.
           
           Download **app-debug.apk** below to install!
         files: app/build/outputs/apk/debug/app-debug.apk

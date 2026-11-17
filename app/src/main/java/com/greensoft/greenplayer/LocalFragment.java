@@ -133,20 +133,31 @@ public class LocalFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        if (currentLayoutMode == LAYOUT_GRID && (activeFolder != null || currentViewMode == VIEW_FILES)) {
+        if (currentLayoutMode == LAYOUT_GRID) {
             rvMedia.setLayoutManager(new GridLayoutManager(requireContext(), 2));
         } else {
             rvMedia.setLayoutManager(new LinearLayoutManager(requireContext()));
         }
 
         mediaAdapter = new MediaAdapter(requireContext(), (activeFolder != null) ? currentFolderVideos : allVideos, (item, position) -> {
-            Intent intent = new Intent(requireContext(), PlayerActivity.class);
-            intent.putExtra("path", item.getPath());
-            intent.putExtra("title", item.getTitle());
-            startActivity(intent);
+            launchPlayer(item.getPath(), item.getTitle());
         });
 
         folderAdapter = new FolderAdapter(requireContext(), folderList, folder -> enterFolder(folder));
+    }
+
+    private void launchPlayer(String path, String title) {
+        if (path == null) return;
+        SharedPreferences resumePrefs = requireContext().getSharedPreferences("player_resume_prefs", Context.MODE_PRIVATE);
+        long resumeMs = resumePrefs.getLong(path, 0);
+
+        Intent intent = new Intent(requireContext(), PlayerActivity.class);
+        intent.putExtra("path", path);
+        intent.putExtra("title", title);
+        if (resumeMs > 3000) {
+            intent.putExtra("resume_pos", resumeMs);
+        }
+        startActivity(intent);
     }
 
     public void setViewMode(int mode) {
@@ -168,7 +179,11 @@ public class LocalFragment extends Fragment {
         renderCurrentView();
     }
 
-    private void enterFolder(FolderItem folder) {
+    public boolean isInFolderView() {
+        return activeFolder != null;
+    }
+
+    public void enterFolder(FolderItem folder) {
         activeFolder = folder;
         currentFolderVideos.clear();
         currentFolderVideos.addAll(folder.getItems());
@@ -178,7 +193,7 @@ public class LocalFragment extends Fragment {
         rvMedia.setAdapter(mediaAdapter);
     }
 
-    private void exitFolderView() {
+    public void exitFolderView() {
         activeFolder = null;
         layoutFolderBreadcrumb.setVisibility(View.GONE);
         renderCurrentView();
@@ -192,7 +207,11 @@ public class LocalFragment extends Fragment {
         }
 
         if (currentViewMode == VIEW_FOLDERS) {
-            rvMedia.setLayoutManager(new LinearLayoutManager(requireContext()));
+            if (currentLayoutMode == LAYOUT_GRID) {
+                rvMedia.setLayoutManager(new GridLayoutManager(requireContext(), 2));
+            } else {
+                rvMedia.setLayoutManager(new LinearLayoutManager(requireContext()));
+            }
             rvMedia.setAdapter(folderAdapter);
             layoutEmpty.setVisibility(folderList.isEmpty() ? View.VISIBLE : View.GONE);
         } else {
@@ -223,10 +242,13 @@ public class LocalFragment extends Fragment {
                 MediaStore.Video.Media.MIME_TYPE
         };
 
+        // Filter out junk/system dummy files (<200KB or <3 seconds duration)
+        String selection = MediaStore.Video.Media.SIZE + " >= 204800 AND " + MediaStore.Video.Media.DURATION + " >= 3000";
+
         Map<String, FolderItem> folderMap = new HashMap<>();
 
         try (Cursor cursor = requireContext().getContentResolver().query(
-                collection, projection, null, null, MediaStore.Video.Media.DATE_ADDED + " DESC")) {
+                collection, projection, selection, null, MediaStore.Video.Media.DATE_ADDED + " DESC")) {
 
             if (cursor != null) {
                 int idCol = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
@@ -250,21 +272,26 @@ public class LocalFragment extends Fragment {
                     int height = cursor.getInt(heightCol);
                     String mimeType = cursor.getString(mimeCol);
 
+                    // Skip hidden files, system cache, or app private data
+                    if (path == null) continue;
+                    String lowerPath = path.toLowerCase();
+                    if (lowerPath.contains("/. ") || lowerPath.contains("/android/data/") || lowerPath.contains("/cache/")) {
+                        continue;
+                    }
+
                     MediaItem item = new MediaItem(id, title, path, duration, size, dateAdded, width, height, mimeType);
                     allVideos.add(item);
 
-                    if (path != null) {
-                        File file = new File(path);
-                        File parent = file.getParentFile();
-                        if (parent != null) {
-                            String parentPath = parent.getAbsolutePath();
-                            FolderItem fItem = folderMap.get(parentPath);
-                            if (fItem == null) {
-                                fItem = new FolderItem(parentPath);
-                                folderMap.put(parentPath, fItem);
-                            }
-                            fItem.addItem(item);
+                    File file = new File(path);
+                    File parent = file.getParentFile();
+                    if (parent != null) {
+                        String parentPath = parent.getAbsolutePath();
+                        FolderItem fItem = folderMap.get(parentPath);
+                        if (fItem == null) {
+                            fItem = new FolderItem(parentPath);
+                            folderMap.put(parentPath, fItem);
                         }
+                        fItem.addItem(item);
                     }
                 }
             }
@@ -308,16 +335,17 @@ public class LocalFragment extends Fragment {
         String lastTitle = resumePrefs.getString("last_played_title", null);
 
         if (lastPath != null && new File(lastPath).exists()) {
+            long resumeMs = resumePrefs.getLong(lastPath, 0);
             Intent intent = new Intent(requireContext(), PlayerActivity.class);
             intent.putExtra("path", lastPath);
             intent.putExtra("title", lastTitle);
+            if (resumeMs > 3000) {
+                intent.putExtra("resume_pos", resumeMs);
+            }
             startActivity(intent);
         } else if (!allVideos.isEmpty()) {
             MediaItem first = allVideos.get(0);
-            Intent intent = new Intent(requireContext(), PlayerActivity.class);
-            intent.putExtra("path", first.getPath());
-            intent.putExtra("title", first.getTitle());
-            startActivity(intent);
+            launchPlayer(first.getPath(), first.getTitle());
         } else {
             Toast.makeText(requireContext(), "No videos available to play", Toast.LENGTH_SHORT).show();
         }
