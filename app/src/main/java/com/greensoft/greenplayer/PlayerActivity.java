@@ -169,11 +169,11 @@ public class PlayerActivity extends AppCompatActivity {
 
         playerView.setPlayer(player);
 
-        MediaItem mediaItem;
+        androidx.media3.common.MediaItem mediaItem;
         if (videoPath.startsWith("http://") || videoPath.startsWith("https://") || videoPath.startsWith("content://")) {
-            mediaItem = MediaItem.fromUri(Uri.parse(videoPath));
+            mediaItem = androidx.media3.common.MediaItem.fromUri(Uri.parse(videoPath));
         } else {
-            mediaItem = MediaItem.fromUri(Uri.fromFile(new File(videoPath)));
+            mediaItem = androidx.media3.common.MediaItem.fromUri(Uri.fromFile(new File(videoPath)));
         }
 
         player.setMediaItem(mediaItem);
