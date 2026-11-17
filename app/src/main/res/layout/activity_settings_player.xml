@@ -1,180 +1,170 @@
-<?xml version=1.0 encoding=utf-8?>
-<LinearLayout xmlns:android=http://schemas.android.com/apk/res/android
-    android:layout_width=match_parent
-    android:layout_height=match_parent
-    android:orientation=vertical
-    android:background=@color/bg_dark>
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_dark">
 
-    <!-- Top Toolbar -->
     <LinearLayout
-        android:layout_width=match_parent
-        android:layout_height=56dp
-        android:orientation=horizontal
-        android:gravity=center_vertical
-        android:paddingHorizontal=12dp
-        android:background=@color/bg_surface>
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="12dp"
+        android:background="@color/bg_surface">
 
         <ImageView
-            android:id=@+id/btnBackPlayerSettings
-            android:layout_width=40dp
-            android:layout_height=40dp
-            android:padding=8dp
-            android:src=@drawable/ic_arrow_back
-            android:background=?attr/selectableItemBackgroundBorderless />
+            android:id="@+id/btnBackPlayerSettings"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="8dp"
+            android:src="@drawable/ic_arrow_back"
+            android:background="?attr/selectableItemBackgroundBorderless" />
 
         <TextView
-            android:layout_width=wrap_content
-            android:layout_height=wrap_content
-            android:layout_marginStart=12dp
-            android:text=Player
-            android:textColor=@color/text_primary
-            android:textSize=18sp
-            android:textStyle=bold />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="Player"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <ScrollView
-        android:layout_width=match_parent
-        android:layout_height=match_parent>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_width=match_parent
-            android:layout_height=wrap_content
-            android:orientation=vertical
-            android:padding=16dp>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <!-- Playback Section -->
             <TextView
-                android:layout_width=wrap_content
-                android:layout_height=wrap_content
-                android:text=Playback
-                android:textColor=@color/icon_blue
-                android:textSize=13sp
-                android:textStyle=bold
-                android:layout_marginBottom=16dp />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Playback"
+                android:textColor="@color/icon_blue"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
 
-            <!-- 1. Resume -->
             <LinearLayout
-                android:id=@+id/layoutResume
-                android:layout_width=match_parent
-                android:layout_height=wrap_content
-                android:orientation=vertical
-                android:clickable=true
-                android:focusable=true
-                android:paddingVertical=8dp
-                android:layout_marginBottom=16dp>
+                android:id="@+id/layoutResume"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingVertical="8dp"
+                android:layout_marginBottom="16dp">
 
                 <TextView
-                    android:layout_width=wrap_content
-                    android:layout_height=wrap_content
-                    android:text=Resume
-                    android:textColor=@color/text_primary
-                    android:textSize=14sp />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Resume"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp" />
 
                 <TextView
-                    android:layout_width=wrap_content
-                    android:layout_height=wrap_content
-                    android:layout_marginTop=2dp
-                    android:text=Select whether to resume from the point where you stopped.
-                    android:textColor=@color/text_secondary
-                    android:textSize=12sp />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Select whether to resume from the point where you stopped."
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
             </LinearLayout>
 
-            <!-- 2. Resume only the first file -->
             <CheckBox
-                android:id=@+id/cbResumeFirstOnly
-                android:layout_width=match_parent
-                android:layout_height=wrap_content
-                android:text=Resume only the first file\nApply resume setting only on the first file. Next files will start from the beginning.
-                android:textColor=@color/text_primary
-                android:textSize=13sp
-                android:lineSpacingExtra=3dp
-                android:layout_marginBottom=16dp />
+                android:id="@+id/cbResumeFirstOnly"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Resume only the first file&#10;Apply resume setting only on the first file. Next files will start from the beginning."
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:lineSpacingExtra="3dp"
+                android:layout_marginBottom="16dp" />
 
-            <!-- 3. Default playback speed -->
             <LinearLayout
-                android:id=@+id/layoutDefaultSpeed
-                android:layout_width=match_parent
-                android:layout_height=wrap_content
-                android:orientation=vertical
-                android:clickable=true
-                android:focusable=true
-                android:paddingVertical=8dp
-                android:layout_marginBottom=16dp>
+                android:id="@+id/layoutDefaultSpeed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingVertical="8dp"
+                android:layout_marginBottom="16dp">
 
                 <TextView
-                    android:layout_width=wrap_content
-                    android:layout_height=wrap_content
-                    android:text=Default playback speed
-                    android:textColor=@color/text_primary
-                    android:textSize=14sp />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Default playback speed"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp" />
 
                 <TextView
-                    android:id=@+id/tvDefaultSpeedValue
-                    android:layout_width=wrap_content
-                    android:layout_height=wrap_content
-                    android:layout_marginTop=2dp
-                    android:text=1.00x
-                    android:textColor=@color/text_secondary
-                    android:textSize=12sp />
+                    android:id="@+id/tvDefaultSpeedValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="1.00x"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
             </LinearLayout>
 
-            <!-- 4. Remember selections -->
             <CheckBox
-                android:id=@+id/cbRememberSelections
-                android:layout_width=match_parent
-                android:layout_height=wrap_content
-                android:text=Remember selections\nRemember selections for each files such as choice of audio track, subtitle track, decoder...
-                android:textColor=@color/text_primary
-                android:textSize=13sp
-                android:lineSpacingExtra=3dp
-                android:checked=true
-                android:layout_marginBottom=16dp />
+                android:id="@+id/cbRememberSelections"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Remember selections&#10;Remember selections for each files such as choice of audio track, subtitle track, decoder..."
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:lineSpacingExtra="3dp"
+                android:checked="true"
+                android:layout_marginBottom="16dp" />
 
-            <!-- 5. Back to list -->
             <CheckBox
-                android:id=@+id/cbBackToList
-                android:layout_width=match_parent
-                android:layout_height=wrap_content
-                android:text=Back to list\nReturn to the list after playback is completed.
-                android:textColor=@color/text_primary
-                android:textSize=13sp
-                android:lineSpacingExtra=3dp
-                android:layout_marginBottom=16dp />
+                android:id="@+id/cbBackToList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Back to list&#10;Return to the list after playback is completed."
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:lineSpacingExtra="3dp"
+                android:layout_marginBottom="16dp" />
 
-            <!-- 6. Preview while seeking -->
             <CheckBox
-                android:id=@+id/cbPreviewSeeking
-                android:layout_width=match_parent
-                android:layout_height=wrap_content
-                android:text=Preview while seeking\nDisplay preview image while changing playback position.
-                android:textColor=@color/text_primary
-                android:textSize=13sp
-                android:lineSpacingExtra=3dp
-                android:checked=true
-                android:layout_marginBottom=16dp />
+                android:id="@+id/cbPreviewSeeking"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Preview while seeking&#10;Display preview image while changing playback position."
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:lineSpacingExtra="3dp"
+                android:checked="true"
+                android:layout_marginBottom="16dp" />
 
-            <!-- 7. Preview while seeking (network) -->
             <CheckBox
-                android:id=@+id/cbPreviewSeekingNetwork
-                android:layout_width=match_parent
-                android:layout_height=wrap_content
-                android:text=Preview while seeking (network)\nDisplay preview image for network play.
-                android:textColor=@color/text_primary
-                android:textSize=13sp
-                android:lineSpacingExtra=3dp
-                android:layout_marginBottom=16dp />
+                android:id="@+id/cbPreviewSeekingNetwork"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Preview while seeking (network)&#10;Display preview image for network play."
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:lineSpacingExtra="3dp"
+                android:layout_marginBottom="16dp" />
 
-            <!-- 8. Fast seeking -->
             <CheckBox
-                android:id=@+id/cbFastSeeking
-                android:layout_width=match_parent
-                android:layout_height=wrap_content
-                android:text=Fast seeking\nSeek to nearest key-frame position instead of exact position. This setting applies to HW+ and SW decoder.
-                android:textColor=@color/text_primary
-                android:textSize=13sp
-                android:lineSpacingExtra=3dp
-                android:checked=true
-                android:layout_marginBottom=16dp />
+                android:id="@+id/cbFastSeeking"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Fast seeking&#10;Seek to nearest key-frame position instead of exact position. This setting applies to HW+ and SW decoder."
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:lineSpacingExtra="3dp"
+                android:checked="true"
+                android:layout_marginBottom="16dp" />
 
         </LinearLayout>
     </ScrollView>

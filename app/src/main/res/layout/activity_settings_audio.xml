@@ -1,142 +1,142 @@
-<?xml version=1.0 encoding=utf-8?>
-<LinearLayout xmlns:android=http://schemas.android.com/apk/res/android
-    android:layout_width=match_parent
-    android:layout_height=match_parent
-    android:orientation=vertical
-    android:background=@color/bg_dark>
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_dark">
 
     <LinearLayout
-        android:layout_width=match_parent
-        android:layout_height=56dp
-        android:orientation=horizontal
-        android:gravity=center_vertical
-        android:paddingHorizontal=12dp
-        android:background=@color/bg_surface>
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="12dp"
+        android:background="@color/bg_surface">
 
         <ImageView
-            android:id=@+id/btnBackAudio
-            android:layout_width=40dp
-            android:layout_height=40dp
-            android:padding=8dp
-            android:src=@drawable/ic_arrow_back
-            android:background=?attr/selectableItemBackgroundBorderless />
+            android:id="@+id/btnBackAudio"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="8dp"
+            android:src="@drawable/ic_arrow_back"
+            android:background="?attr/selectableItemBackgroundBorderless" />
 
         <TextView
-            android:layout_width=wrap_content
-            android:layout_height=wrap_content
-            android:layout_marginStart=12dp
-            android:text=Audio
-            android:textColor=@color/text_primary
-            android:textSize=18sp
-            android:textStyle=bold />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="Audio"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <ScrollView
-        android:layout_width=match_parent
-        android:layout_height=match_parent>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_width=match_parent
-            android:layout_height=wrap_content
-            android:orientation=vertical
-            android:padding=16dp>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
             <TextView
-                android:layout_width=wrap_content
-                android:layout_height=wrap_content
-                android:text=Audio Playback
-                android:textColor=@color/icon_blue
-                android:textSize=13sp
-                android:textStyle=bold
-                android:layout_marginBottom=16dp />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Audio Playback"
+                android:textColor="@color/icon_blue"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
 
             <CheckBox
-                android:id=@+id/cbAudioPlayerMode
-                android:layout_width=match_parent
-                android:layout_height=wrap_content
-                android:text=Audio player\nPlay audio files as well as videos.
-                android:textColor=@color/text_primary
-                android:textSize=13sp
-                android:lineSpacingExtra=3dp
-                android:checked=true
-                android:layout_marginBottom=16dp />
+                android:id="@+id/cbAudioPlayerMode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Audio player&#10;Play audio files as well as videos."
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:lineSpacingExtra="3dp"
+                android:checked="true"
+                android:layout_marginBottom="16dp" />
 
             <CheckBox
-                android:id=@+id/cbVolumeBoost
-                android:layout_width=match_parent
-                android:layout_height=wrap_content
-                android:text=Volume boost (200%)\nAllows increasing volume up to twice the system volume level (up to 30).
-                android:textColor=@color/text_primary
-                android:textSize=13sp
-                android:lineSpacingExtra=3dp
-                android:checked=true
-                android:layout_marginBottom=16dp />
+                android:id="@+id/cbVolumeBoost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Volume boost (200%)&#10;Allows increasing volume up to twice the system volume level (up to 30)."
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:lineSpacingExtra="3dp"
+                android:checked="true"
+                android:layout_marginBottom="16dp" />
 
             <View
-                android:layout_width=match_parent
-                android:layout_height=1dp
-                android:background=@color/divider_color
-                android:layout_marginBottom=16dp />
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_color"
+                android:layout_marginBottom="16dp" />
 
             <TextView
-                android:layout_width=wrap_content
-                android:layout_height=wrap_content
-                android:text=Sound Output
-                android:textColor=@color/icon_blue
-                android:textSize=13sp
-                android:textStyle=bold
-                android:layout_marginBottom=16dp />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sound Output"
+                android:textColor="@color/icon_blue"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
 
             <LinearLayout
-                android:id=@+id/layoutAudioDelay
-                android:layout_width=match_parent
-                android:layout_height=wrap_content
-                android:orientation=vertical
-                android:clickable=true
-                android:focusable=true
-                android:paddingVertical=8dp
-                android:layout_marginBottom=16dp>
+                android:id="@+id/layoutAudioDelay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingVertical="8dp"
+                android:layout_marginBottom="16dp">
 
                 <TextView
-                    android:layout_width=wrap_content
-                    android:layout_height=wrap_content
-                    android:text=Audio sync / delay
-                    android:textColor=@color/text_primary
-                    android:textSize=14sp />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Audio sync / delay"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp" />
 
                 <TextView
-                    android:id=@+id/tvAudioDelayVal
-                    android:layout_width=wrap_content
-                    android:layout_height=wrap_content
-                    android:layout_marginTop=2dp
-                    android:text=0 ms
-                    android:textColor=@color/text_secondary
-                    android:textSize=12sp />
+                    android:id="@+id/tvAudioDelayVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="0 ms"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <LinearLayout
-                android:id=@+id/layoutEqualizer
-                android:layout_width=match_parent
-                android:layout_height=wrap_content
-                android:orientation=vertical
-                android:clickable=true
-                android:focusable=true
-                android:paddingVertical=8dp>
+                android:id="@+id/layoutEqualizer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingVertical="8dp">
 
                 <TextView
-                    android:layout_width=wrap_content
-                    android:layout_height=wrap_content
-                    android:text=Equalizer
-                    android:textColor=@color/text_primary
-                    android:textSize=14sp />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Equalizer"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp" />
 
                 <TextView
-                    android:layout_width=wrap_content
-                    android:layout_height=wrap_content
-                    android:layout_marginTop=2dp
-                    android:text=System Audio Equalizer &amp; Bass Boost
-                    android:textColor=@color/text_secondary
-                    android:textSize=12sp />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="System Audio Equalizer and Bass Boost"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
             </LinearLayout>
 
         </LinearLayout>

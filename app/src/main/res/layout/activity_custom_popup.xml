@@ -1,73 +1,73 @@
-<?xml version=1.0 encoding=utf-8?>
-<LinearLayout xmlns:android=http://schemas.android.com/apk/res/android
-    android:layout_width=match_parent
-    android:layout_height=match_parent
-    android:orientation=vertical
-    android:background=@color/bg_dark>
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_dark">
 
     <!-- Top Toolbar -->
     <LinearLayout
-        android:layout_width=match_parent
-        android:layout_height=56dp
-        android:orientation=horizontal
-        android:gravity=center_vertical
-        android:paddingHorizontal=12dp
-        android:background=@color/bg_surface>
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="12dp"
+        android:background="@color/bg_surface">
 
         <ImageView
-            android:id=@+id/btnBackPopup
-            android:layout_width=40dp
-            android:layout_height=40dp
-            android:padding=8dp
-            android:src=@drawable/ic_arrow_back
-            android:background=?attr/selectableItemBackgroundBorderless />
+            android:id="@+id/btnBackPopup"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="8dp"
+            android:src="@drawable/ic_arrow_back"
+            android:background="?attr/selectableItemBackgroundBorderless" />
 
         <TextView
-            android:layout_width=wrap_content
-            android:layout_height=wrap_content
-            android:layout_marginStart=12dp
-            android:text=Custom Pop-up Play
-            android:textColor=@color/text_primary
-            android:textSize=18sp
-            android:textStyle=bold />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="Custom Pop-up Play"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width=match_parent
-        android:layout_height=wrap_content
-        android:orientation=vertical
-        android:padding=16dp>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <TextView
-            android:layout_width=wrap_content
-            android:layout_height=wrap_content
-            android:text=Custom Pop-up Play Controls
-            android:textColor=@color/text_primary
-            android:textSize=15sp
-            android:textStyle=bold
-            android:layout_marginBottom=16dp />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Custom Pop-up Play Controls"
+            android:textColor="@color/text_primary"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
 
         <RadioGroup
-            android:id=@+id/rgPopupControls
-            android:layout_width=match_parent
-            android:layout_height=wrap_content>
+            android:id="@+id/rgPopupControls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <RadioButton
-                android:id=@+id/rbPrevNext
-                android:layout_width=match_parent
-                android:layout_height=48dp
-                android:text=Previous/Next(Default)
-                android:textColor=@color/text_primary
-                android:textSize=14sp
-                android:checked=true />
+                android:id="@+id/rbPrevNext"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Previous/Next(Default)"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp"
+                android:checked="true" />
 
             <RadioButton
-                android:id=@+id/rbFastForwardRewind
-                android:layout_width=match_parent
-                android:layout_height=48dp
-                android:text=Fast Forward/Rewind
-                android:textColor=@color/text_primary
-                android:textSize=14sp />
+                android:id="@+id/rbFastForwardRewind"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Fast Forward/Rewind"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp" />
         </RadioGroup>
 
     </LinearLayout>
