@@ -1,4 +1,4 @@
-﻿package com.greensoft.greenplayer;
+package com.greensoft.greenplayer;
 
 import java.io.File;
 import java.text.SimpleDateFormat;

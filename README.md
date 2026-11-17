@@ -1,4 +1,4 @@
-﻿# 🟢 Green Player — Modern High-Performance Android Media Player
+# 🟢 Green Player — Modern High-Performance Android Media Player
 
 > **Package Name:** com.greensoft.greenplayer  
 > **Target SDK:** Android 14 (API 34) | **Min SDK:** Android 5.0 (API 21)  

@@ -1,4 +1,4 @@
-﻿package com.greensoft.greenplayer;
+package com.greensoft.greenplayer;
 
 import android.content.ContentUris;
 import android.content.Context;

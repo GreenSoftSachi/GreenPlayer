@@ -1,4 +1,4 @@
-﻿package com.greensoft.greenplayer;
+package com.greensoft.greenplayer;
 
 import android.app.PictureInPictureParams;
 import android.content.Context;
